@@ -1,3 +1,6 @@
+# TODO
+- try to include dependencies & create a Makefile that can do a self-contained build
+
 # DLO-138
 An open source firmware for DSO-138 Oscilloscope. 
 ![Photo](https://github.com/ardyesp/DLO-138/blob/master/pics/pic4.png)
