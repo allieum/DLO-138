@@ -10,6 +10,7 @@
 // ------------------------
 void setup()	{
 // ------------------------
+  afio_cfg_debug_ports(AFIO_DEBUG_NONE);
 	DBG_INIT(SERIAL_BAUD_RATE);
 	DBG_PRINT("Dual channel O Scope with two logic channels, ver: ");
 	DBG_PRINTLN(FIRMWARE_VERSION);
@@ -31,5 +32,3 @@ void loop()	{
 // ------------------------
 	controlLoop();
 }
-
-

@@ -1,5 +1,5 @@
 // comment out following line to use DSO push buttons instead of encoder
-#define USE_ENCODER
+// #define USE_ENCODER
 
 // serial print macros
 #define DBG_INIT(...) 		{ Serial.begin(__VA_ARGS__); 	}
