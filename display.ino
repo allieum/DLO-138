@@ -286,11 +286,10 @@ void clearNDrawSignals()	{
 			// draw the line segment
 			transposedPt1 = GRID_HEIGHT + vOffset + yCursorsSnap[0] - val1;
 			transposedPt2 = GRID_HEIGHT + vOffset + yCursorsSnap[0] - val2;
-			plotLineSegment(transposedPt1, transposedPt2, i, AN_SIGNAL1);
+			plotLineSegment(transposedPt1, transposedPt2, i, getGradientColor(i));
 		}
 
 	}
-	
 	
 	// store the drawn parameters to old storage
 	wavesOld[0] = wavesSnap[0];
@@ -305,7 +304,31 @@ void clearNDrawSignals()	{
 
 }
 
+#define SYNTH_GREEN    0x3F10
+#define SYNTH_YELLOW   0xFFAC
+#define SYNTH_PEACH    0xFD45
+#define SYNTH_SALMON   0xFC30
+#define SYNTH_PINK     0xF811
+#define SYNTH_LAVENDER 0xE4DF
+#define SYNTH_PURPLE   0x9018
 
+#define NUM_COLORS 7
+
+const int colorChunkSize = GRID_WIDTH / NUM_COLORS + 1;
+
+const uint16_t gradientColors[NUM_COLORS] = {
+  SYNTH_GREEN,
+  SYNTH_YELLOW,
+  SYNTH_PEACH,
+  SYNTH_SALMON,
+  SYNTH_PINK,
+  SYNTH_LAVENDER,
+  SYNTH_PURPLE
+};
+
+uint16_t getGradientColor(int index) {
+  return gradientColors[index / colorChunkSize];
+}
 
 
 // ------------------------
@@ -324,8 +347,6 @@ inline void plotLineSegment(int16_t transposedPt1, int16_t transposedPt2,  int i
 	// draw the line segments
 	tft.drawLine(index + hOffset, transposedPt1, index + hOffset, transposedPt2, color);
 }
-
-
 
 
 
