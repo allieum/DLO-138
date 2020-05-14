@@ -1,5 +1,7 @@
 # TODO
-- try to include dependencies & create a Makefile that can do a self-contained build
+- modify signal color w/ palette (try gradient over time [easier] and space [harder])
+- look into what it would take to increase sampling rate
+- try to include dependencies & create a Makefile that can do a self-contained build?
 
 # DLO-138
 An open source firmware for DSO-138 Oscilloscope. 
