@@ -1,3 +1,4 @@
+
 # TODO
 - modify signal color w/ palette (try gradient over time [easier] and space [harder])
 - look into what it would take to increase sampling rate
