@@ -25,6 +25,8 @@ Extra features come at an additional cost. In the case of DLO-138, it is the los
 
 # Build
 The build environment uses Arduino. For help with setting up IDE visit http://www.stm32duino.com
+- Install Arduido IDE from https://www.arduino.cc/en/Main/Software. Add arduino-builder command line tool to your PATH.
+- 
 
 # Hardware
 Following changes can be applied selectively, to get maximum functionality from board. The firmware can be run on unmodified hardware as well.
