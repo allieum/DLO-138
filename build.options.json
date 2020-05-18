@@ -1,0 +1,8 @@
+{
+  "builtInLibrariesFolders": "/home/allie/computers/scope/tools/arduino-1.8.12/libraries",
+  "builtInToolsFolders": "/home/allie/computers/scope/tools/arduino-1.8.12/tools-builder,/home/allie/computers/scope/tools/arduino-1.8.12/hardware/tools/avr,/home/allie/.arduino15/packages",
+  "fqbn": "STM32:STM32F1:genericSTM32F103C:device_variant=STM32F103CB,upload_method=serialMethod,cpu_speed=speed_72mhz,opt=osstd",
+  "hardwareFolders": "/home/allie/computers/scope/tools/arduino-1.8.12/hardware,/home/allie/.arduino15/packages,./hardware",
+  "otherLibrariesFolders": "/home/allie/Arduino/libraries",
+  "runtime.ide.version": "10812"
+}
