@@ -3,9 +3,13 @@
 #include "src/TFTLib/Adafruit_TFTLCD_8bit_STM32.h"
 #include "global.h"
 #include "variables.h"
-
+#include "dro138.h"
 
 #define FIRMWARE_VERSION	"1.0"
+
+void girl(uint16_t snack) {
+
+}
 
 // ------------------------
 void setup()	{
@@ -19,12 +23,15 @@ void setup()	{
 
 	// set digital and analog stuff
 	initIO();
-	
+
 	// load scope config or factory reset to defaults
 	loadConfig(digitalRead(BTN4) == LOW);
-	
+
 	// init the IL9341 display
 	initDisplay();
+
+	// chomp !
+	girl(candy());
 }
 
 
