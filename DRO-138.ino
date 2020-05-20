@@ -8,10 +8,6 @@
 
 #define FIRMWARE_VERSION	"1.0"
 
-void girl(uint16_t snack) {
-
-}
-
 // ------------------------
 void setup()	{
 // ------------------------
@@ -30,9 +26,6 @@ void setup()	{
 
 	// init the IL9341 display
 	initDisplay();
-
-	// chomp !
-	girl(candy());
 }
 
 

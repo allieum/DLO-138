@@ -8,9 +8,11 @@ pub extern fn candy_panic(_: &PanicInfo) -> ! {
     panic!("no more candy !!!");
 }
 
+const RUST_COLOR: u16 = 0xEB00;
+
 #[no_mangle]
-pub extern fn candy() -> u16 {
-    48_886
+pub extern fn rust_colored_candy() -> u16 {
+    RUST_COLOR
 }
 
 //#[cfg(test)]

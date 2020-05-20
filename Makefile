@@ -32,4 +32,4 @@ deploy: compile
 	stm32flash -b 115200 -w ${OUTPUT_BIN} -v ${SERIAL_DEVICE}
 
 clean:
-	rm -rf ${OUTPUT_DIR}/*
+	rm -rf ${OUTPUT_DIR}/* ${RUST_H}
