@@ -5,10 +5,11 @@
 #include "variables.h"
 #include "dro138.h"
 
+
 #define FIRMWARE_VERSION	"1.0"
 
 void girl(uint16_t snack) {
-
+	//dandy();
 }
 
 // ------------------------
