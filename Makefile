@@ -3,8 +3,7 @@ OUTPUT_DIR=    ./build
 OUTPUT_BIN=    ${OUTPUT_DIR}/${MAIN_INO}.bin
 SERIAL_DEVICE= /dev/ttyUSB0
 
-# Maintain original contents of compiler.c.elf.extra_flags, overridden below
-LD_DIR=        ${PWD}/hardware/STM32/STM32F1/variants/generic_stm32f103c/ld
+RUST_H  =      ./src/dro138.h
 RUST_LIB=      ${PWD}/target/thumbv7m-none-eabi/release/libdro138.a
 
 
@@ -16,9 +15,11 @@ all: compile deploy
 rust:
 	cargo build --release --target=thumbv7m-none-eabi
 
+cbindgen: ${RUST_H}
+
 # figure out params to exclude stdlib etc
-dro138.h:
-	cbindgen --config cbindgen.toml --crate dro138 --output dro138.h
+${RUST_H}:
+	cbindgen --config cbindgen.toml --crate dro138 --output ${RUST_H}
 
 # todo comment, var
 compile: ${OUTPUT_DIR}
