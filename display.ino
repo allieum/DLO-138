@@ -284,7 +284,7 @@ void clearNDrawSignals()	{
 			transposedPt1 = GRID_HEIGHT + vOffset + yCursorsSnap[0] - val1;
 			transposedPt2 = GRID_HEIGHT + vOffset + yCursorsSnap[0] - val2;
 			//plotLineSegment(transposedPt1, transposedPt2, i, getGradientColor(i));
-			plotLineSegment(transposedPt1, transposedPt2, i, rust_colored_candy());
+			plotLineSegment(transposedPt1, transposedPt2, i, rust_colored_candy(6));
 		}
 
 	}

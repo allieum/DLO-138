@@ -22,7 +22,7 @@ ${RUST_H}:
 	cbindgen --config cbindgen.toml --crate dro138 --output ${RUST_H}
 
 # todo comment, var
-compile: ${OUTPUT_DIR}
+compile: ${OUTPUT_DIR} rust cbindgen
 	arduino-builder -build-options-file build.options.json -verbose -prefs='custom.dro138.staticlib="${RUST_LIB}"' -build-path ${OUTPUT_DIR} ${MAIN_INO}
 
 ${OUTPUT_DIR}:
