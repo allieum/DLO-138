@@ -10,8 +10,13 @@ fn candy_panic(_: &PanicInfo) -> ! {
 const RUST_COLOR: u16 = 0xEB00;
 
 #[no_mangle]
-pub extern fn rust_colored_candy(age: u16) -> u16 {
+pub extern "C" fn rust_colored_candy(age: u16) -> u16 {
     RUST_COLOR + age
+}
+
+#[no_mangle]
+pub extern "C" fn loadConfigFromRust(reset: bool, load_config: extern "C" fn(bool)) {
+    load_config(reset);
 }
 
 //#[cfg(test)]
