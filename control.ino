@@ -23,11 +23,11 @@ void controlLoop()	{
 	if(triggerType == TRIGGER_AUTO)	{
 		captureDisplayCycle(true);
 	}
-	
+
 	else if(triggerType == TRIGGER_NORM)	{
 		captureDisplayCycle(false);
 	}
-	
+
 	else	{
 		// single trigger
 		clearWaves();
@@ -39,16 +39,16 @@ void controlLoop()	{
 		// request repainting of screen labels in next draw cycle
 		repaintLabels();
 		// draw the waveform
-		drawWaves();
+		draw_waves(clearNDrawSignals);
 		blinkLED();
 		// dump captured data on serial port
 		dumpSamples();
 
 		// freeze display
-		while(hold);
-		
+		//while(hold);
+
 		// update display indicating hold released
-		drawLabels();
+		// drawLabels();
 	}
 
 	// process any long pending operations which cannot be serviced in ISR
@@ -65,18 +65,20 @@ void captureDisplayCycle(boolean wTimeOut)	{
 	sampleWaves(wTimeOut);
 	// draw the waveform
 	indicateCapturingDone();
-	drawWaves();
+
+	draw_waves(clearNDrawSignals);
+
 	// inter wait before next sampling
 	if(triggered)
 		blinkLED();
-	
+
 	if(hold)	{
 		// update UI labels
-		drawLabels();
+		// drawLabels();
 		// dump captured data on serial port
 		dumpSamples();
 	}
-	
+
 	// freeze display if requested
 	while(hold);
 }

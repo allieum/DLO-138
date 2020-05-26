@@ -85,7 +85,7 @@ void initDisplay()	{
 	delay(4000);
 
 	// and paint o-scope
-	clearWaves();
+	// clearWaves();
 }
 
 
@@ -100,7 +100,7 @@ void drawWaves()	{
 	printStatsOld = printStats;
 
 	// draw the grid
-	drawGrid();
+	//drawGrid();
 
 	// clear and draw signal traces
 	clearNDrawSignals();
@@ -111,7 +111,7 @@ void drawWaves()	{
 
 	// if label repaint requested - do so now
 	if(paintLabels)	{
-		drawLabels();
+		//drawLabels();
 		paintLabels = false;
 	}
 }
@@ -125,8 +125,8 @@ void clearWaves()	{
 	// clear screen
 	tft.fillScreen(ILI9341_BLACK);
 	// and paint o-scope
-	drawGrid();
-	drawLabels();
+	// drawGrid();
+	// drawLabels();
 }
 
 

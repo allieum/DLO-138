@@ -19,10 +19,7 @@ pub extern "C" fn loadConfigFromRust(reset: bool, load_config: extern "C" fn(boo
     load_config(reset);
 }
 
-//#[cfg(test)]
-//mod tests {
-    //#[test]
-    //fn it_works() {
-    //    assert_eq!(2 + 2, 4);
-    //}
-//}
+#[no_mangle]
+pub extern "C" fn draw_waves(draw_cwaves: extern "C" fn()) {
+    draw_cwaves();
+}
