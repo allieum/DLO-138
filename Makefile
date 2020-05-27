@@ -9,7 +9,7 @@ RUST_LIB=      ${PWD}/target/thumbv7m-none-eabi/release/libdro138.a
 
 # more varable.. also init submodule rule somewhere
 
-all: compile deploy
+all: clean compile deploy
 
 # mess with specifying output
 rust:
@@ -28,7 +28,7 @@ compile: ${OUTPUT_DIR} rust cbindgen
 ${OUTPUT_DIR}:
 	mkdir -p ${OUTPUT_DIR}
 
-deploy: compile
+deploy:
 	stm32flash -b 115200 -w ${OUTPUT_BIN} -v ${SERIAL_DEVICE}
 
 clean:

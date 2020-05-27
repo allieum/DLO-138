@@ -168,6 +168,10 @@ void indicateCapturingDone()	{
 // ------------------------
 void clearNDrawSignals()	{
 // ------------------------
+
+	// hack
+	tft.fillScreen(blue_rust());
+
 	static boolean wavesOld[4] = {false,};
 	static int16_t yCursorsOld[4];
 
@@ -284,7 +288,10 @@ void clearNDrawSignals()	{
 			transposedPt1 = GRID_HEIGHT + vOffset + yCursorsSnap[0] - val1;
 			transposedPt2 = GRID_HEIGHT + vOffset + yCursorsSnap[0] - val2;
 			//plotLineSegment(transposedPt1, transposedPt2, i, getGradientColor(i));
-			plotLineSegment(transposedPt1, transposedPt2, i, rust_colored_candy(6));
+			for (int j = 0; j < 5; ++j) {
+				int offset = -j * GRID_HEIGHT / 5;
+				plotLineSegment(transposedPt1 - signal_chunk_factor() + offset, transposedPt2 + signal_chunk_factor() + offset, i, pink_rust());
+			}
 		}
 
 	}
@@ -756,10 +763,11 @@ void clearStats()	{
 // ------------------------
 void banner()	{
 // ------------------------
-	tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
+//	tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
+	tft.setTextColor(pink_rust(), ILI9341_BLACK);
 	tft.setTextSize(2);
 	tft.setCursor(110, 30);
-	tft.print("DLO-138");
+	tft.print("DRO-138");
 	tft.drawRect(100, 25, 100, 25, ILI9341_WHITE);
 
 	tft.setTextSize(1);
@@ -768,8 +776,8 @@ void banner()	{
 
 	tft.setCursor(30, 95);
 	tft.print("Usage: ");
-	tft.setTextColor(ILI9341_YELLOW, ILI9341_BLACK);
-	tft.print("https://github.com/ardyesp/DLO-138");
+	tft.setTextColor(blue_rust(), ILI9341_BLACK);
+	tft.print("https://github.com/allieum/DRO-138");
 
 	tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
 	tft.setCursor(30, 120);

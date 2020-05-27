@@ -7,11 +7,23 @@ fn candy_panic(_: &PanicInfo) -> ! {
     panic!("no more candy !!!");
 }
 
-const RUST_COLOR: u16 = 0xEB00;
+const _RUST_COLOR: u16 = 0xEB00;
+const PASTEL_PINK: u16 = 0xE4DD;
+const PASTEL_BLUE: u16 = 0x9EDD;
 
 #[no_mangle]
-pub extern "C" fn rust_colored_candy(age: u16) -> u16 {
-    RUST_COLOR + age
+pub extern "C" fn pink_rust() -> u16 {
+    PASTEL_PINK
+}
+
+#[no_mangle]
+pub extern "C" fn blue_rust() -> u16 {
+    PASTEL_BLUE
+}
+
+#[no_mangle]
+pub extern "C" fn signal_chunk_factor() -> u16 {
+    3
 }
 
 #[no_mangle]

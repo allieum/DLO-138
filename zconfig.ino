@@ -98,7 +98,8 @@ void loadDefaults()	{
 	xCursor = (NUM_SAMPLES - GRID_WIDTH)/2;
 
 	// set y in the middle
-	yCursors[0] = -70;
+  // yCursors[0] = -70;
+	yCursors[0] = 0;
 	yCursors[1] = -90;
 	yCursors[2] = -110;
 	yCursors[3] = -130;
