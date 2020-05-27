@@ -4,8 +4,15 @@
 - look into what it would take to increase sampling rate
 - try to include dependencies & create a Makefile that can do a self-contained build?
 
+# Build Dependencies
+- rust
+-   cbindgen
+-   bindgen, clang?
+- arduino-ide
+- STM32F1 arduino hardware definitions (included as submodule)
+
 # DLO-138
-An open source firmware for DSO-138 Oscilloscope. 
+An open source firmware for DSO-138 Oscilloscope.
 ![Photo](https://github.com/ardyesp/DLO-138/blob/master/pics/pic4.png)
 
 DSO-138 is an excellent piece of hardware based on ARM Cortex M3 core STM32F103 processor and sufficient for most beginner users. The stock firmware, while quite responsive, can use a few improvements. The main shortcoming which prompted the development of DLO-138 firmware is the inability to get waveform data into a computer for further analysis and the lack of a second channel. Engineers troubleshooting hardware issues need to mark reference points on waveform so having another analog or digital channel can greatly improve analysis. This firmware hopes to improve on these issues.
@@ -26,7 +33,7 @@ Extra features come at an additional cost. In the case of DLO-138, it is the los
 # Build
 The build environment uses Arduino. For help with setting up IDE visit http://www.stm32duino.com
 - Install Arduido IDE from https://www.arduino.cc/en/Main/Software. Add arduino-builder command line tool to your PATH.
-- 
+-
 
 # Hardware
 Following changes can be applied selectively, to get maximum functionality from board. The firmware can be run on unmodified hardware as well.
@@ -37,15 +44,15 @@ Following changes can be applied selectively, to get maximum functionality from 
 	Left/Right turn in encoder (+/- if using switches) changes the parameter which is in focus
 	Short press OK to HOLD the waveform and output it on serial port
 	Long press OK button:
-	
+
 		Focus				Action
 		Trigger Level		Zero the trigger level to Analog channel 1
 		Wave X scrollbar	Center waveform on screen (at trigger point)
-		Wave Y cursor		Zero the cursor. If Analog CH1 coupling is GND, waveform reference base is set 
+		Wave Y cursor		Zero the cursor. If Analog CH1 coupling is GND, waveform reference base is set
 		Other				Toggle on screen Analog CH1 statistics display
 
 	Press and hold OK button at power up to reset settings to default
-		
+
 
 # References
 DSO-138 - http://www.jyetech.com/Products/LcdScope/e138.php
@@ -57,9 +64,3 @@ STM32F103 - http://www.st.com/en/microcontrollers/stm32f103.html
 Adafruint Graphics Library - https://github.com/adafruit/Adafruit-GFX-Library
 
 Parallel 8 bit ILI9341 library - https://github.com/stevstrong/Adafruit_TFTLCD_8bit_STM32
-
- 
-
-
- 
- 
