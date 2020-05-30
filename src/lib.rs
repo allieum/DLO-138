@@ -5,6 +5,8 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
+// todo this is a weird place for this... separate into its own file
+// and import in build.rs to use as prepend? maybe
 mod hack {
     pub type c_int = i32;
     pub type c_uint = u32;
@@ -20,11 +22,14 @@ mod hack {
     pub use core::ffi::c_void;
 }
 
+use hack::*;
+
 //include!("./bindings.rs");
 
 mod bindings;
 
-use bindings::Adafruit_GFX;
+use bindings::Adafruit_TFTLCD_8bit_STM32;
+use bindings::Adafruit_TFTLCD_8bit_STM32_fillScreen;
 
 //use ::Adafruit_GFX;
 
@@ -35,13 +40,13 @@ fn candy_panic(_: &PanicInfo) -> ! {
     panic!("no more candy !!!");
 }
 
-const _RUST_COLOR: u16 = 0xEB00;
+const RUST_COLOR: u16 = 0xEB00;
 const PASTEL_PINK: u16 = 0xE4DD;
 const PASTEL_BLUE: u16 = 0x9EDD;
 
-#[no_mangle]
-pub extern "C" fn sleepy(_gfx: Adafruit_GFX) {
-}
+//#[no_mangle]
+//pub extern "C" fn sleepy(_gfx: Adafruit_GFX) {
+//}
 
 #[no_mangle]
 pub extern "C" fn pink_rust() -> u16 {
@@ -64,6 +69,8 @@ pub extern "C" fn loadConfigFromRust(reset: bool, load_config: extern "C" fn(boo
 }
 
 #[no_mangle]
-pub extern "C" fn draw_waves(draw_cwaves: extern "C" fn()) {
+pub unsafe extern "C" fn draw_waves(lcd: *mut c_void, draw_cwaves: extern "C" fn()) {
+//    let lcd = lcd as *mut c_void;
+    Adafruit_TFTLCD_8bit_STM32_fillScreen(lcd, RUST_COLOR);
     draw_cwaves();
 }

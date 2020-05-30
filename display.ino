@@ -166,11 +166,12 @@ void indicateCapturingDone()	{
 
 // 0, 1 Analog channels. 2, 3 digital channels
 // ------------------------
+
 void clearNDrawSignals()	{
 // ------------------------
 
 	// hack
-	tft.fillScreen(blue_rust());
+	//tft.fillScreen(blue_rust());
 
 	static boolean wavesOld[4] = {false,};
 	static int16_t yCursorsOld[4];

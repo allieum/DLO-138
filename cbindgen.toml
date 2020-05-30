@@ -1,1 +1,5 @@
 no_includes = true
+
+[export]
+include = ["draw_waves", "blue_rust", "loadConfigFromRust", "pink_rust", "signal_chunk_factor"]
+item_types = ["functions"]

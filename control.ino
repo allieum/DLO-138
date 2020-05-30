@@ -11,8 +11,7 @@ void setTriggerType(uint8_t tType)	{
 	keepSampling = false;
 }
 
-
-
+extern Adafruit_TFTLCD_8bit_STM32 tft;
 
 // ------------------------
 void controlLoop()	{
@@ -39,7 +38,7 @@ void controlLoop()	{
 		// request repainting of screen labels in next draw cycle
 		repaintLabels();
 		// draw the waveform
-		draw_waves(clearNDrawSignals);
+		draw_waves((void*) &tft, clearNDrawSignals);
 		blinkLED();
 		// dump captured data on serial port
 		dumpSamples();
@@ -66,7 +65,7 @@ void captureDisplayCycle(boolean wTimeOut)	{
 	// draw the waveform
 	indicateCapturingDone();
 
-	draw_waves(clearNDrawSignals);
+	draw_waves((void*) &tft, clearNDrawSignals);
 
 	// inter wait before next sampling
 	if(triggered)
