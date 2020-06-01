@@ -1,10 +1,11 @@
-MAIN_INO=      ./arduino/DRO-138.ino
+MAIN_INO=      DRO-138.ino
+MAIN_INO_PATH= ./arduino/${MAIN_INO}
 OUTPUT_DIR=    ${PWD}/build
 OUTPUT_BIN=    ${OUTPUT_DIR}/${MAIN_INO}.bin
 SERIAL_DEVICE= /dev/ttyUSB0
 
 # todo consider renaming to bindings.h? and put bindings.rs in variable
-RUST_H=        ./src/dro138.h
+RUST_H=        .arduino/src/dro138.h
 RUST_LIB=      ${PWD}/target/thumbv7m-none-eabi/release/libdro138.a
 
 # more varable.. also init submodule rule somewhere
@@ -19,7 +20,7 @@ cbindgen:
 
 # todo comment, var
 compile: ${OUTPUT_DIR} cbindgen rust
-	arduino-builder -build-options-file arduino/build.options.json -verbose -prefs='custom.dro138.staticlib="${RUST_LIB}"' -build-path ${OUTPUT_DIR} ${MAIN_INO};
+	arduino-builder -build-options-file arduino/build.options.json -verbose -prefs='custom.dro138.staticlib="${RUST_LIB}"' -build-path ${OUTPUT_DIR} ${MAIN_INO_PATH};
 
 ${OUTPUT_DIR}:
 	mkdir -p ${OUTPUT_DIR}

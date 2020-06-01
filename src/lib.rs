@@ -26,10 +26,9 @@ use hack::*;
 
 mod bindings;
 
+use bindings::Adafruit_GFX_drawLine;
 use bindings::Adafruit_TFTLCD_8bit_STM32;
 use bindings::Adafruit_TFTLCD_8bit_STM32_fillScreen;
-
-//use ::Adafruit_GFX;
 
 use core::panic::PanicInfo;
 
@@ -64,12 +63,25 @@ pub extern "C" fn loadConfigFromRust(reset: bool, load_config: extern "C" fn(boo
 
 #[no_mangle]
 pub unsafe extern "C" fn draw_waves(lcd: *mut c_void, draw_cwaves: extern "C" fn()) {
-    Adafruit_TFTLCD_8bit_STM32_fillScreen(lcd, RUST_COLOR);
+//    Adafruit_TFTLCD_8bit_STM32_fillScreen(lcd, RUST_COLOR);
     let lcd = lcd as *mut Adafruit_TFTLCD_8bit_STM32;
-    let lcd = &mut *lcd;
+    let mut lcd = *lcd;
+    lcd.fill_screen(PASTEL_BLUE);
     draw_cwaves();
 }
 
-impl Adafruit_TFTLCD_8bit_STM32 {
+const _screen_width: u16 = 320;
+const _screen_height: u16 = 240;
 
+impl Adafruit_TFTLCD_8bit_STM32 {
+    // todo look into typedefs and also from/into for pointer conversion
+    pub unsafe fn draw_line(&mut self, x0: i16, y0: i16, x1: i16, y1: i16, color: u16) {
+	let this = self as *mut Adafruit_TFTLCD_8bit_STM32 as *mut c_void;
+	Adafruit_GFX_drawLine(this, x0, y0, x1, y1, color);
+    }
+
+    pub unsafe fn fill_screen(&mut self, color: u16) {
+	let this = self as *mut Adafruit_TFTLCD_8bit_STM32 as *mut c_void;
+	Adafruit_TFTLCD_8bit_STM32_fillScreen(this, color);
+    }
 }
