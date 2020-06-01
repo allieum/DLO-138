@@ -1,3 +1,3 @@
 [submodule "STM32"]
-	path = hardware/STM32
+	path = arduino/hardware/STM32
 	url = https://github.com/rogerclarkmelbourne/Arduino_STM32.git

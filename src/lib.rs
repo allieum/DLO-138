@@ -24,8 +24,6 @@ mod hack {
 
 use hack::*;
 
-//include!("./bindings.rs");
-
 mod bindings;
 
 use bindings::Adafruit_TFTLCD_8bit_STM32;
@@ -70,4 +68,8 @@ pub unsafe extern "C" fn draw_waves(lcd: *mut c_void, draw_cwaves: extern "C" fn
     let lcd = lcd as *mut Adafruit_TFTLCD_8bit_STM32;
     let lcd = &mut *lcd;
     draw_cwaves();
+}
+
+impl Adafruit_TFTLCD_8bit_STM32 {
+
 }

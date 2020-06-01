@@ -7,7 +7,7 @@ TAGS
 src/bindings.rs
 
 #todo this is pretty dumb probably
-src/TFTLib/Adafruit_TFTLCD_8bit_STM32.hpp
+**/TFTLib/Adafruit_TFTLCD_8bit_STM32.hpp
 
 #Added by cargo
 

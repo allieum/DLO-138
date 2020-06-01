@@ -1,7 +1,7 @@
 #include <EEPROM.h>
 #include <Adafruit_GFX.h>
 #include "src/dro138.h"
-#include "src/TFTLib/Adafruit_TFTLCD_8bit_STM32.h"
+#include "src/TFTLib/Adafruit_TFTLCD_8bit_STM32.hpp"
 #include "global.h"
 #include "variables.h"
 
