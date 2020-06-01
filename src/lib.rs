@@ -44,10 +44,6 @@ const RUST_COLOR: u16 = 0xEB00;
 const PASTEL_PINK: u16 = 0xE4DD;
 const PASTEL_BLUE: u16 = 0x9EDD;
 
-//#[no_mangle]
-//pub extern "C" fn sleepy(_gfx: Adafruit_GFX) {
-//}
-
 #[no_mangle]
 pub extern "C" fn pink_rust() -> u16 {
     PASTEL_PINK
@@ -70,7 +66,8 @@ pub extern "C" fn loadConfigFromRust(reset: bool, load_config: extern "C" fn(boo
 
 #[no_mangle]
 pub unsafe extern "C" fn draw_waves(lcd: *mut c_void, draw_cwaves: extern "C" fn()) {
-//    let lcd = lcd as *mut c_void;
     Adafruit_TFTLCD_8bit_STM32_fillScreen(lcd, RUST_COLOR);
+    let lcd = lcd as *mut Adafruit_TFTLCD_8bit_STM32;
+    let lcd = &mut *lcd;
     draw_cwaves();
 }
