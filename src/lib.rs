@@ -1,9 +1,11 @@
 #![no_std]
 
-// todo, all needed?
+// todo, all needed? could put them in build.rs prepend too
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
+
+use stm32f1::stm32f103;
 
 // todo this is a weird place for this... separate into its own file
 // and import in build.rs to use as prepend? maybe
@@ -37,7 +39,9 @@ fn candy_panic(_: &PanicInfo) -> ! {
     panic!("no more candy !!!");
 }
 
-const RUST_COLOR: u16 = 0xEB00;
+const peripherals: stm32f103::Peripherals = stm32f103::Peripherals::take().unwrap();
+
+const _RUST_COLOR: u16 = 0xEB00;
 const PASTEL_PINK: u16 = 0xE4DD;
 const PASTEL_BLUE: u16 = 0x9EDD;
 
@@ -68,6 +72,12 @@ pub unsafe extern "C" fn draw_waves(lcd: *mut c_void, draw_cwaves: extern "C" fn
     let mut lcd = *lcd;
     lcd.fill_screen(PASTEL_BLUE);
     draw_cwaves();
+
+    let _sample_ready = peripherals.ADC1.sr.read().eoc().is_complete();
+
+    // ADC data register
+    // wow! todo figure out if it even gets data. & how to get 16 bits
+    let _sample = peripherals.ADC1.dr.read().data().bits() as u16;
 }
 
 const _screen_width: u16 = 320;

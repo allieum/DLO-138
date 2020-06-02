@@ -1,3 +1,5 @@
+# todo etags
+
 MAIN_INO=      DRO-138.ino
 MAIN_INO_PATH= ./arduino/${MAIN_INO}
 OUTPUT_DIR=    ${PWD}/build
