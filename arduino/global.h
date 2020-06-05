@@ -9,7 +9,7 @@
 #define SERIAL_BAUD_RATE	115200
 
 // analog and digital samples storage depth
-#define NUM_SAMPLES 	2048	
+#define NUM_SAMPLES 	2048
 
 // display colours
 #define AN_SIGNAL1 		ILI9341_PINK

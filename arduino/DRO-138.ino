@@ -8,6 +8,9 @@
 
 #define FIRMWARE_VERSION	"1.0"
 
+// todo maybe get rid of display.ino
+extern Adafruit_TFTLCD_8bit_STM32 tft;
+
 // ------------------------
 void setup()	{
 // ------------------------
@@ -24,6 +27,8 @@ void setup()	{
 	// load scope config or factory reset to defaults
 	//loadConfig(digitalRead(BTN4) == LOW);
 	loadConfigFromRust(digitalRead(BTN4) == LOW, loadConfig);
+
+	init_rust((void*) &tft);
 
 	// init the IL9341 display
 	initDisplay();

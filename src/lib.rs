@@ -34,12 +34,25 @@ use bindings::Adafruit_TFTLCD_8bit_STM32_fillScreen;
 
 use core::panic::PanicInfo;
 
+
 #[panic_handler]
 fn candy_panic(_: &PanicInfo) -> ! {
-    panic!("no more candy !!!");
+    // todo this could display an error msg debug screen
+    panic!("figure out what this is for in my life !!!");
 }
 
-const peripherals: stm32f103::Peripherals = stm32f103::Peripherals::take().unwrap();
+// having these as Option may be silly
+// todo screaming snake case for statics & consts
+static mut PERIPHERALS: Option<stm32f103::Peripherals> = None;
+static mut ADAFRUIT_LCD: Option<Adafruit_TFTLCD_8bit_STM32> = None;
+
+unsafe fn peripherals() -> &'static stm32f103::Peripherals {
+    PERIPHERALS.as_ref().unwrap()
+}
+
+unsafe fn adafruit_lcd() -> &'static Adafruit_TFTLCD_8bit_STM32 {
+    ADAFRUIT_LCD.as_ref().unwrap()
+}
 
 const _RUST_COLOR: u16 = 0xEB00;
 const PASTEL_PINK: u16 = 0xE4DD;
@@ -66,22 +79,41 @@ pub extern "C" fn loadConfigFromRust(reset: bool, load_config: extern "C" fn(boo
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn draw_waves(lcd: *mut c_void, draw_cwaves: extern "C" fn()) {
-//    Adafruit_TFTLCD_8bit_STM32_fillScreen(lcd, RUST_COLOR);
-    let lcd = lcd as *mut Adafruit_TFTLCD_8bit_STM32;
-    let mut lcd = *lcd;
-    lcd.fill_screen(PASTEL_BLUE);
-    draw_cwaves();
-
-    let _sample_ready = peripherals.ADC1.sr.read().eoc().is_complete();
-
-    // ADC data register
-    // wow! todo figure out if it even gets data. & how to get 16 bits
-    let _sample = peripherals.ADC1.dr.read().data().bits() as u16;
+pub unsafe extern "C" fn init_rust(lcd: *mut c_void) {
+    let lcd = *(lcd as *mut Adafruit_TFTLCD_8bit_STM32);
+    ADAFRUIT_LCD = Some(lcd);
+    PERIPHERALS = Some(stm32f103::Peripherals::take().unwrap());
 }
 
-const _screen_width: u16 = 320;
+const sample_depth: usize = 2048;
+static mut wave_samples: [u16; sample_depth] = [0; sample_depth];
+
+// todo sample mod
+#[no_mangle]
+pub unsafe extern "C" fn sample_wave() {
+    for sample in wave_samples.iter_mut() {
+	*sample = sample_adc1();
+    }
+}
+
+pub unsafe fn sample_adc1() -> u16 {
+    // Wait for a conversion to complete
+    while peripherals().ADC1.sr.read().eoc().is_not_complete() {}
+
+    // Get data register bits
+    peripherals().ADC1.dr.read().data().bits()
+}
+
+// todo draw mod
+#[no_mangle]
+pub unsafe extern "C" fn draw_waves(_draw_cwaves: extern "C" fn()) {
+
+}
+
+// todo put this and bindings as adafruit mod
+const _screen_width: u16 = 320; // could be member fns
 const _screen_height: u16 = 240;
+
 
 impl Adafruit_TFTLCD_8bit_STM32 {
     // todo look into typedefs and also from/into for pointer conversion

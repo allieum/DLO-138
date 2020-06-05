@@ -14,6 +14,7 @@ fn main() {
 	.clang_args(ARGS.split(" "))
         .whitelist_type("Adafruit_TFTLCD_8bit_STM32")
 	.use_core()
+	// todo maybe these could go in adafruit mod somehow
         .ctypes_prefix("crate::hack")
         .generate()
         .expect("Unable to generate bindings");

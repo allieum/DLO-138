@@ -7,12 +7,15 @@ OUTPUT_BIN=    ${OUTPUT_DIR}/${MAIN_INO}.bin
 SERIAL_DEVICE= /dev/ttyUSB0
 
 # todo consider renaming to bindings.h? and put bindings.rs in variable
-RUST_H=        .arduino/src/dro138.h
+RUST_H=        ./arduino/src/dro138.h
 RUST_LIB=      ${PWD}/target/thumbv7m-none-eabi/release/libdro138.a
 
 # more varable.. also init submodule rule somewhere
 
-all: clean compile deploy
+nobindings: compile deploy
+
+# todo make it so we don't have to clean here....
+all: clean cbindgen compile deploy
 
 rust:
 	cargo build --release
@@ -21,7 +24,7 @@ cbindgen:
 	cbindgen --config cbindgen.toml --crate dro138 --output ${RUST_H}
 
 # todo comment, var
-compile: ${OUTPUT_DIR} cbindgen rust
+compile: ${OUTPUT_DIR} rust
 	arduino-builder -build-options-file arduino/build.options.json -verbose -prefs='custom.dro138.staticlib="${RUST_LIB}"' -build-path ${OUTPUT_DIR} ${MAIN_INO_PATH};
 
 ${OUTPUT_DIR}:

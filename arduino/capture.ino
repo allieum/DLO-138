@@ -77,37 +77,37 @@ void startScanTimeout(int16_t mSec)	{
 
 
 /*
-Custom handler for Trigger line interrupt (EXTI8). This avoids the 
+Custom handler for Trigger line interrupt (EXTI8). This avoids the
 overhead of demux'ing interrupt line and calling handler, and is faster.
 Arduino Core - exti.c has to be modified. Comment out the function __irq_exti9_5
 defined there, or add __weak qualifier.
-See: 
+See:
 	http://www.stm32duino.com/viewtopic.php?f=3&t=1816
 	https://github.com/leaflabs/libmaple/blob/master/notes/interrupts.txt
-	
+
 // ------------------------
 extern "C" void __irq_exti9_5(void) {
 // ------------------------
 	// custom interrupt handler for exti 5 to 9
 	// since we have only one interrupt always assume it is Trigger -> exti 8
-	
+
 	asm volatile(
 		"	cbnz %[triggered], fin_trig		\n\t"	// if(!triggered)
 		"	cbnz %[minSamples], validCond 	\n\t"	// if(!minSamplesAcquired)
 		"	cmp %[sIndex], %[halfSamples]	\n\t"	// if(sIndex < NUM_SAMPLES/2)
 		"	bcc fin_trig					\n\t"
-	
+
 		"validCond:							\n\t"
 		"	mov %[tIndex], %[sIndex]		\n\t"	// tIndex = sIndex;
 		"	mov %[triggered], #1			\n\t"	// triggered = true;
-		
+
 		"fin_trig:							\n\t"
 		"	ldr r1, =0x40010400				\n\t"	// load EXTI base address
-		"	mov r0, #0x03E0					\n\t"	// clear all 5-9 interrupts 
+		"	mov r0, #0x03E0					\n\t"	// clear all 5-9 interrupts
 		"	str r0, [r1, #20]				\n\t"	// into EXTI_PR
 		"	nop								\n\t"
 		"	nop								\n\t"
-		
+
 		: [triggered] "+r" (triggered), [tIndex] "+r" (tIndex)
 		: [sIndex] "r" (sIndex), [minSamples] "r" (minSamplesAcquired), [halfSamples] "I" (NUM_SAMPLES/2)
 		: "r0", "r1", "cc"
@@ -123,13 +123,13 @@ void triggerISR(void) {
 		// skip this trigger if min samples not acquired
 		if(!minSamplesAcquired && (sIndex < NUM_SAMPLES/2))
 			return;
-		
+
 		// snap the position where trigger occurred
 		tIndex = sIndex;
 		// avoid multiple triggering
 		triggered = true;
 	}
-} 
+}
 
 
 
@@ -140,7 +140,7 @@ void scanTimeoutISR(void) {
 	keepSampling = false;
 	// disable scan timeout timer
 	Timer2.pause();
-} 
+}
 
 
 
@@ -151,16 +151,16 @@ void startSampling(int16_t lDelay)	{
 	keepSampling = true;
 	minSamplesAcquired = false;
 	uint16_t lCtr = 0;
-	
+
 	// clear old dataset
 	samplingTime = 0;
 	triggered = false;
 	sIndex = 0;
-	
-	prevTime = micros();
-	
-	if(lDelay < 0)	{
 
+	prevTime = micros();
+
+	if(lDelay < 0)	{
+		// No delay, only store half as many samples
 		asm volatile(
 			"	ldrh r9, [%[sIndex]]			\n\t"	// load sIndex value
 
@@ -170,11 +170,17 @@ void startSampling(int16_t lDelay)	{
 
 			"	ldr r1, =0x40012400				\n\t"	// load ADC1 base address, ADC2 = +0x400
 
+			// load [r1] + 0x4C = 0x4001244C into r0
 			"	ldr r0, [r1, #0x4C]				\n\t"	// get and save ADC1 DR
+
+			// store half-word r0 at ch[sIndex * 2]
 			"	strh r0, [%[ch1], r9, lsl #1]	\n\t"
-			"	ldr r0, [r1, #0x44C]			\n\t"	// get and save ADC2 DR
+
+			// same as above but use 0x4001284C for ch2
+			" ldr r0, [r1, #0x44C]			\n\t"	// get and save ADC2 DR
 			"	strh r0, [%[ch2], r9, lsl #1]	\n\t"
 
+			// not gonna need these pups
 			"	ldr r1, =0x40010800				\n\t"	// load GPIOA address
 			"	ldr r0, [r1, #0x08]				\n\t"	// get and save GPIOA IDR
 			"	strh r0, [%[dCH], r9, lsl #1]	\n\t"
@@ -202,17 +208,17 @@ void startSampling(int16_t lDelay)	{
 			"	b top_1							\n\t"
 			"finished_1:						\n\t"
 
-			: 
-			: [keepSampling] "r" (keepSamplingPtr), [sIndex] "r" (sIndexPtr), [triggered] "r" (triggeredPtr), 
+			:
+			: [keepSampling] "r" (keepSamplingPtr), [sIndex] "r" (sIndexPtr), [triggered] "r" (triggeredPtr),
 				[ch1] "r" (ch1Capture), [ch2] "r" (ch2Capture), [dCH] "r" (bitStore), [lCtr] "r" (lCtr),
 				[nSamp] "I" (NUM_SAMPLES), [halfSamples] "I" (NUM_SAMPLES/2),
 				[snapMicros] "i" (snapMicros)
 			: "r0", "r1", "r9", "memory", "cc"
-		);		
-	
+		);
+
 	}
 	else if(lDelay == 0)	{
-		
+		// No delay, store all samples
 		asm volatile(
 			"	ldrh r9, [%[sIndex]]			\n\t"	// load sIndex value
 
@@ -224,9 +230,23 @@ void startSampling(int16_t lDelay)	{
 
 			"waitADC1_2:						\n\t"
 			"	ldr r0, [r1, #0]				\n\t"	// ADC1 SR
-			"	lsls r0, r0, #30				\n\t"	// get to EOC bit
-			"	bpl	waitADC1_2					\n\t"
 
+			// From stm32 manual:
+			//  If a regular channel was converted:
+			//– The converted data is stored in the 16-bit ADC_DR register
+			//– The EOC (End Of Conversion) flag is set
+			//– and an interrupt is generated if the EOCIE is set.*
+			//
+			// * this seems interesting! wonder how long it takes to convert
+			//   a sample & if it's worth not busywaiting
+		  //
+			// lsls -- left shift, update z & n flags
+			"	lsls r0, r0, #30				\n\t"	// get to EOC bit
+
+			// Wait for EOC bit to be set
+			"	bpl	waitADC1_2					\n\t" // bpl -- branch if !n (>= 0)
+
+			// This lil block won't be needed
 			"waitADC2_2:						\n\t"
 			"	ldr r0, [r1, #0x400]			\n\t"	// ADC2 SR
 			"	lsls r0, r0, #30				\n\t"	// get to EOC bit
@@ -264,17 +284,17 @@ void startSampling(int16_t lDelay)	{
 			"	b top_2							\n\t"
 			"finished_2:						\n\t"
 
-			: 
-			: [keepSampling] "r" (keepSamplingPtr), [sIndex] "r" (sIndexPtr), [triggered] "r" (triggeredPtr), 
+			:
+			: [keepSampling] "r" (keepSamplingPtr), [sIndex] "r" (sIndexPtr), [triggered] "r" (triggeredPtr),
 				[ch1] "r" (ch1Capture), [ch2] "r" (ch2Capture), [dCH] "r" (bitStore), [lCtr] "r" (lCtr),
 				[nSamp] "I" (NUM_SAMPLES), [halfSamples] "I" (NUM_SAMPLES/2),
 				[snapMicros] "i" (snapMicros)
 			: "r0", "r1", "r9", "memory", "cc"
-		);		
-		
+		);
+
 	}
 	else	{
-		
+		// insert delay to adjust sampling rate
 		asm volatile(
 			"	ldrh r9, [%[sIndex]]			\n\t"	// load sIndex value
 
@@ -331,16 +351,16 @@ void startSampling(int16_t lDelay)	{
 			"	b top_3							\n\t"
 			"finished_3:						\n\t"
 
-			: 
-			: [keepSampling] "r" (keepSamplingPtr), [sIndex] "r" (sIndexPtr), [triggered] "r" (triggeredPtr), 
+			:
+			: [keepSampling] "r" (keepSamplingPtr), [sIndex] "r" (sIndexPtr), [triggered] "r" (triggeredPtr),
 				[ch1] "r" (ch1Capture), [ch2] "r" (ch2Capture), [dCH] "r" (bitStore), [lCtr] "r" (lCtr),
 				[nSamp] "I" (NUM_SAMPLES), [halfSamples] "I" (NUM_SAMPLES/2), [tDelay] "r" (lDelay),
 				[snapMicros] "i" (snapMicros)
 			: "r0", "r1", "r9", "memory", "cc"
-		);		
-	
+		);
+
 	}
-	
+
 }
 
 
@@ -368,17 +388,17 @@ void dumpSamples()	{
 	DBG_PRINT("CH1 Coupling: "); DBG_PRINT(cplNames[couplingPos]); DBG_PRINT(", Range: "); DBG_PRINT(rngNames[rangePos]); DBG_PRINTLN("/div");
 	DBG_PRINTLN("CH2 Coupling: --, Range: +-2048");
 
-	DBG_PRINT("Triggered: "); 
+	DBG_PRINT("Triggered: ");
 	if(triggered)	{
-		DBG_PRINTLN("YES"); 
+		DBG_PRINTLN("YES");
 	}
 	else {
-		DBG_PRINTLN("NO"); 
+		DBG_PRINTLN("NO");
 	}
 
 	// calculate stats on this sample set
 	calculateStats();
-	
+
 	DBG_PRINT("CH1 Stats");
 	if(wStats.mvPos)	{
 		DBG_PRINTLN(" (mV):");
@@ -386,7 +406,7 @@ void dumpSamples()	{
 	else	{
 		DBG_PRINTLN(" (V):");
 	}
-		
+
 	DBG_PRINT("\tVmax: "); DBG_PRINT(wStats.Vmaxf);
 	DBG_PRINT(", Vmin: "); DBG_PRINT(wStats.Vminf);
 	DBG_PRINT(", Vavr: "); DBG_PRINT(wStats.Vavrf);
@@ -405,18 +425,18 @@ void dumpSamples()	{
 		DBG_PRINT(", PW: "); DBG_PRINT("--");
 		DBG_PRINT(", Duty: "); DBG_PRINTLN("--");
 	}
-	
+
 	DBG_PRINTLN("");
 	DBG_PRINTLN("Time\tCH1\tCH2\tD_CH1\tD_CH2");
 	uint16_t idx = 0;
-	
+
 	// sampling stopped at sIndex - 1
 	for(uint16_t k = sIndex; k < NUM_SAMPLES; k++)
 		printSample(k, timePerSample * idx++);
-	
+
 	for(uint16_t k = 0; k < sIndex; k++)
 		printSample(k, timePerSample * idx++);
-	
+
 	DBG_PRINTLN("");
 }
 
@@ -435,10 +455,9 @@ void printSample(uint16_t k, float timeStamp) {
 	DBG_PRINT((bitStore[k] & 0x2000) ? 1 : 0);
 	DBG_PRINT("\t");
 	DBG_PRINT((bitStore[k] & 0x4000) ? 1 : 0);
-	
+
 	if(triggered && (tIndex == k))
 		DBG_PRINT("\t<--TRIG");
-	
+
 	DBG_PRINTLN();
 }
-
