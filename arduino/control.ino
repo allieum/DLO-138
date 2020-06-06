@@ -17,6 +17,7 @@ extern Adafruit_TFTLCD_8bit_STM32 tft;
 void controlLoop()	{
 // ------------------------
 	// start by reading the state of analog system
+	// todo look into this one
 	readInpSwitches();
 
 	if(triggerType == TRIGGER_AUTO)	{
@@ -59,12 +60,13 @@ void controlLoop()	{
 // ------------------------
 void captureDisplayCycle(boolean wTimeOut)	{
 // ------------------------
-	indicateCapturing();
-	// blocking call - until timeout or trigger
-	sampleWaves(wTimeOut);
-	// draw the waveform
-	indicateCapturingDone();
+	/* indicateCapturing(); */
+	/* // blocking call - until timeout or trigger */
+	/* sampleWaves(wTimeOut); */
+	/* // draw the waveform */
+	/* indicateCapturingDone(); */
 
+	sample_wave();
 	draw_waves(clearNDrawSignals);
 
 	// inter wait before next sampling

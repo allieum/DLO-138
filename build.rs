@@ -13,6 +13,7 @@ fn main() {
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
 	.clang_args(ARGS.split(" "))
         .whitelist_type("Adafruit_TFTLCD_8bit_STM32")
+        .whitelist_type("Adafruit_GFX")
 	.use_core()
 	// todo maybe these could go in adafruit mod somehow
         .ctypes_prefix("crate::hack")

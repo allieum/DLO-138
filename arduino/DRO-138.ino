@@ -11,6 +11,10 @@
 // todo maybe get rid of display.ino
 extern Adafruit_TFTLCD_8bit_STM32 tft;
 
+void print_lcd(const char* str) {
+	tft.print(str);
+}
+
 // ------------------------
 void setup()	{
 // ------------------------
@@ -28,10 +32,12 @@ void setup()	{
 	//loadConfig(digitalRead(BTN4) == LOW);
 	loadConfigFromRust(digitalRead(BTN4) == LOW, loadConfig);
 
-	init_rust((void*) &tft);
-
 	// init the IL9341 display
 	initDisplay();
+
+	//	tft.fillScreen(pink_rust());
+
+	init_rust((void*) &tft, print_lcd);
 }
 
 
