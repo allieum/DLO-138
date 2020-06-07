@@ -2,7 +2,7 @@
 .\#*
 build/**
 *~
-dro138.h
+arduino/src/dro138.h
 TAGS
 src/bindings.rs
 
