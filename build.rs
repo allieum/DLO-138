@@ -18,8 +18,8 @@ fn main() {
 	.clang_args(ARGS.split(" "))
         .whitelist_type("Adafruit_TFTLCD_8bit_STM32")
 	.use_core()
-        .ctypes_prefix("crate::lcd::ctypes")
-        .
+        .ctypes_prefix("crate::ctypes")
+        .raw_line(PREPEND_DIRECTIVES)
         .generate()
         .expect("Unable to generate bindings");
 

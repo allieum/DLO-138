@@ -30,14 +30,14 @@ void setup()	{
 
 	// load scope config or factory reset to defaults
 	//loadConfig(digitalRead(BTN4) == LOW);
-	loadConfigFromRust(digitalRead(BTN4) == LOW, loadConfig);
+	loadConfig(digitalRead(BTN4) == LOW);
 
 	// init the IL9341 display
 	initDisplay();
 
 	//	tft.fillScreen(pink_rust());
 
-	init_rust((void*) &tft, print_lcd);
+	init_rust((void*) &tft);
 }
 
 

@@ -1,5 +1,5 @@
-const SAMPLE_DEPTH: usize = 2048;
-static mut WAVE_SAMPLES: [u16; SAMPLE_DEPTH] = [0; SAMPLE_DEPTH];
+pub const SAMPLE_DEPTH: usize = 2048;
+pub static mut WAVE_SAMPLES: [u16; SAMPLE_DEPTH] = [0; SAMPLE_DEPTH];
 
 #[no_mangle]
 pub unsafe extern "C" fn sample_wave() {
@@ -10,6 +10,7 @@ pub unsafe extern "C" fn sample_wave() {
 
 // todo replace with DMA
 unsafe fn sample_adc1() -> u16 {
+    0
     // Wait for a conversion to complete
 //    while peripherals().ADC1.sr.read().eoc().is_not_complete() {}
 
