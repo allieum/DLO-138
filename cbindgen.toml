@@ -1,1 +1,3 @@
 no_includes = true
+
+# todo exclude unnecessary statics

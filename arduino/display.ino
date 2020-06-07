@@ -291,7 +291,7 @@ void clearNDrawSignals()	{
 			//plotLineSegment(transposedPt1, transposedPt2, i, getGradientColor(i));
 			for (int j = 0; j < 5; ++j) {
 				int offset = -j * GRID_HEIGHT / 5;
-				plotLineSegment(transposedPt1 - signal_chunk_factor() + offset, transposedPt2 + signal_chunk_factor() + offset, i, pink_rust());
+				//				plotLineSegment(transposedPt1 - signal_chunk_factor() + offset, transposedPt2 + signal_chunk_factor() + offset, i, pink_rust());
 			}
 		}
 
@@ -765,7 +765,7 @@ void clearStats()	{
 void banner()	{
 // ------------------------
 //	tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
-	tft.setTextColor(pink_rust(), ILI9341_BLACK);
+	tft.setTextColor(0xE4DD, ILI9341_BLACK);
 	tft.setTextSize(2);
 	tft.setCursor(110, 30);
 	tft.print("DRO-138");
@@ -777,7 +777,7 @@ void banner()	{
 
 	tft.setCursor(30, 95);
 	tft.print("Usage: ");
-	tft.setTextColor(blue_rust(), ILI9341_BLACK);
+	tft.setTextColor(0x9EDD, ILI9341_BLACK);
 	tft.print("https://github.com/allieum/DRO-138");
 
 	tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);

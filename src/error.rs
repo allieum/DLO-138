@@ -1,7 +1,6 @@
 use core::panic::PanicInfo;
 use core::fmt::Write;
 
-
 use crate::ctypes::c_char;
 
 #[panic_handler]
