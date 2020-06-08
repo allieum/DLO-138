@@ -19,17 +19,17 @@ unsafe fn setup_adc_dma() {
     let adc_address = &(peripherals.ADC1.dr) as *const _ as u32;
     peripherals.DMA1.ch1.par.write(|w| w.bits(adc_address));
 
-    crate::error::print(adc_address);
+//    crate::error::print(adc_address);
 
     // Write buffer address to the memory address register
     let buffer_address = &crate::sample::WAVE_SAMPLES as *const _ as u32;
     peripherals.DMA1.ch1.mar.write(|w| w.bits(buffer_address));
 
-    let buffer_size = crate::sample::SAMPLE_DEPTH as u32;
+    let buffer_size = 1;//crate::sample::SAMPLE_DEPTH as u32;
     peripherals.DMA1.ch1.ndtr.write(|w| w.bits(buffer_size));
 
     // Enable DMA requests for ADC1
-    peripherals.ADC1.cr2.write(|w| w.dma().enabled());
+    peripherals.ADC1.cr2.modify(|_, w| w.dma().enabled());
 
     peripherals.DMA1.ch1.cr.write(|w| w
 				  .pl().very_high()
@@ -41,6 +41,14 @@ unsafe fn setup_adc_dma() {
 				  .pinc().disabled()
 				  // .tcie().enabled() // interrupt on complete?
 				  .en().enabled());
+
+    // Start ADC
+    // peripherals.ADC1.cr2.modify(|_, w| w.adon().enabled());
+    let cr = peripherals.DMA1.ch1.cr.read().bits() as u32;
+    crate::adafruit_lcd::get().fill_screen(crate::draw::BLACK);
+    //    crate::draw::blink_message(cr); // why zero???
+    //    crate::error::print(peripherals.DMA1.ch1.par.read().bits()); hmmmm. determine if this API works??
+   loop {};
 }
 
 // worth it? maybe do macro instead

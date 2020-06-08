@@ -11,8 +11,8 @@
 // todo maybe get rid of display.ino
 extern Adafruit_TFTLCD_8bit_STM32 tft;
 
-void print_lcd(const char* str) {
-	tft.print(str);
+void print_serial(const char* str) {
+	Serial.print(str);
 }
 
 // ------------------------
@@ -37,7 +37,7 @@ void setup()	{
 
 	//	tft.fillScreen(pink_rust());
 
-	init_rust((void*) &tft);
+	init_rust((void*) &tft, print_serial);
 }
 
 

@@ -1,7 +1,19 @@
 use core::panic::PanicInfo;
-use core::fmt::Write;
+use core::fmt::{Display, Write};
 
 use crate::ctypes::c_char;
+
+static mut PRINT_SERIAL: Option<fn(*const c_char)> = None;
+
+pub unsafe fn init(print_serial: fn(*const c_char)) {
+    PRINT_SERIAL = Some(print_serial);
+}
+
+pub unsafe fn print_serial<T: Display>(msg: T) {
+    let mut s = HackStr::new();
+    write!(&mut s, "{}", msg).expect("nothing");
+    PRINT_SERIAL.unwrap()(s.as_cstr());
+}
 
 #[panic_handler]
 unsafe fn candy_panic(info: &PanicInfo) -> ! {
@@ -24,6 +36,8 @@ pub unsafe fn print(addr: u32) {
     write!(&mut s, "{:#x}", addr).expect("didn't work");
 
     crate::draw::draw_message(&s);
+
+    loop {}
 }
 
 
@@ -33,11 +47,15 @@ pub struct HackStr {
 }
 
 impl HackStr {
-    pub fn new() -> HackStr {
+    pub const fn new() -> HackStr {
 	HackStr {
 	    length: 0,
 	    buf: [0; 100]
 	}
+    }
+
+    pub fn clear(&mut self) {
+	self.length = 0;
     }
 
     pub fn as_cstr(&self) -> *const c_char {
