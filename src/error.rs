@@ -18,6 +18,14 @@ unsafe fn candy_panic(info: &PanicInfo) -> ! {
     loop {};
 }
 
+pub unsafe fn print(addr: u32) {
+    let mut s = HackStr::new();
+
+    write!(&mut s, "{:#x}", addr).expect("didn't work");
+
+    crate::draw::draw_message(&s);
+}
+
 
 pub struct HackStr {
     length: usize,
