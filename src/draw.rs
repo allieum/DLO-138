@@ -39,9 +39,10 @@ pub unsafe extern "C" fn draw_waves(_draw_cwaves: extern "C" fn()) {
 	    OLD_POINTS[i] = y1;
 	});
 
-   let cr = crate::stm32_peripherals::get().DMA1.ch1.cr.read().bits();
+   // let cr = crate::stm32_peripherals::get().DMA1.ch1.cr.read().bits();
 
-    crate::draw::blink_message(cr);
+   //  crate::draw::blink_message(cr);
+   //  crate::debug::print_serial(cr);
 //    crate::draw::blink_message(crate::sample::WAVE_SAMPLES[0]);
 }
 

@@ -1,19 +1,30 @@
+use core::fmt::Write;
 use core::panic::PanicInfo;
-use core::fmt::{Display, Write};
-
 use crate::ctypes::c_char;
 
-static mut PRINT_SERIAL: Option<fn(*const c_char)> = None;
+macro_rules! serial {
+    ($($args:tt),*) => {{
+	use core::fmt::Write;
+
+	let mut s = crate::debug::HackStr::new();
+	write!(&mut s, $($args),*).expect("oops");
+	s.write_str("\n");
+
+	crate::debug::PRINT_SERIAL.unwrap()(s.as_cstr());
+    }}
+}
+
+pub static mut PRINT_SERIAL: Option<fn(*const c_char)> = None;
 
 pub unsafe fn init(print_serial: fn(*const c_char)) {
     PRINT_SERIAL = Some(print_serial);
 }
 
-pub unsafe fn print_serial<T: Display>(msg: T) {
-    let mut s = HackStr::new();
-    write!(&mut s, "{}", msg).expect("nothing");
-    PRINT_SERIAL.unwrap()(s.as_cstr());
-}
+// pub unsafe fn print_serial<T: Display>(msg: T) {
+//     let mut s = HackStr::new();
+//     write!(&mut s, "{}\n", msg).expect("nothing");
+//     PRINT_SERIAL.unwrap()(s.as_cstr());
+// }
 
 #[panic_handler]
 unsafe fn candy_panic(info: &PanicInfo) -> ! {
@@ -54,6 +65,10 @@ impl HackStr {
 	}
     }
 
+    pub fn append(&mut self) {
+
+    }
+
     pub fn clear(&mut self) {
 	self.length = 0;
     }
@@ -63,7 +78,7 @@ impl HackStr {
     }
 }
 
-impl Write for HackStr {
+impl core::fmt::Write for HackStr {
     // todo bound check
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
 	for c in s.chars() {

@@ -12,10 +12,10 @@ RUST_LIB=      ${PWD}/target/thumbv7m-none-eabi/release/libdro138.a
 
 # more varable.. also init submodule rule somewhere
 
-nobindings: compile deploy
+nobindings: compile deploy listen-serial
 
 # todo make it so we don't have to clean here....
-all: clean cbindgen compile deploy
+all: clean cbindgen compile deploy listen-serial
 
 rust:
 	cargo build --release
@@ -32,6 +32,9 @@ ${OUTPUT_DIR}:
 
 deploy:
 	stm32flash -b 115200 -w ${OUTPUT_BIN} -v ${SERIAL_DEVICE}
+
+listen-serial:
+	socat stdio /dev/ttyUSB0
 
 clean:
 	rm -rf ${OUTPUT_DIR}/* ${RUST_H} src/bindings.rs target/thumbv7m-none-eabi

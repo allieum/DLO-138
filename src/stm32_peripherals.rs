@@ -1,3 +1,4 @@
+use core::fmt::Write;
 use stm32f1::stm32f103;
 
 static mut SINGLETON: Option<stm32f103::Peripherals> = None;
@@ -13,6 +14,9 @@ pub unsafe fn get() -> &'static stm32f103::Peripherals {
 
 unsafe fn setup_adc_dma() {
     let peripherals = get();
+
+    let cr = peripherals.ADC1.cr2.read().bits();
+    serial!("{}", cr);
 
     // Write the address of ADC1's data register to the
     // DMA's peripheral address register.
@@ -31,6 +35,9 @@ unsafe fn setup_adc_dma() {
     // Enable DMA requests for ADC1
     peripherals.ADC1.cr2.modify(|_, w| w.dma().enabled());
 
+    let cr = peripherals.ADC1.cr2.read().bits();
+//    crate::debug::print_serial(cr);
+
     peripherals.DMA1.ch1.cr.write(|w| w
 				  .pl().very_high()
 				  .dir().from_peripheral()
@@ -44,11 +51,11 @@ unsafe fn setup_adc_dma() {
 
     // Start ADC
     // peripherals.ADC1.cr2.modify(|_, w| w.adon().enabled());
-    let cr = peripherals.DMA1.ch1.cr.read().bits() as u32;
-    crate::adafruit_lcd::get().fill_screen(crate::draw::BLACK);
+    // let cr = peripherals.DMA1.ch1.cr.read().bits() as u32;
+//    crate::adafruit_lcd::get().fill_screen(crate::draw::BLACK);
     //    crate::draw::blink_message(cr); // why zero???
     //    crate::error::print(peripherals.DMA1.ch1.par.read().bits()); hmmmm. determine if this API works??
-   loop {};
+  // loop {};
 }
 
 // worth it? maybe do macro instead

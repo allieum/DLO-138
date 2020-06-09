@@ -121,13 +121,11 @@ void setTriggerLevel(int16_t tLvl)	{
 	pwmWrite(TRIGGER_LEVEL, 1800 + trigLevel);
 }
 
-
-
-
-
 // ------------------------
 void readInpSwitches()	{
 // ------------------------
+	// todo this seems to cause gap in adc data
+
 	static uint8_t couplingOld, rangeOld;
 
 	uint16_t cpl, pos1, pos2;
