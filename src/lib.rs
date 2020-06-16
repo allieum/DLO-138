@@ -1,7 +1,5 @@
 #![no_std]
 
-use core::fmt::Write;
-
 mod bindings;
 mod ctypes;
 mod draw;

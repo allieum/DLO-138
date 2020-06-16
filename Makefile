@@ -9,6 +9,7 @@ SERIAL_DEVICE= /dev/ttyUSB0
 # todo consider renaming to bindings.h? and put bindings.rs in variable
 RUST_H=        ./arduino/src/dro138.h
 RUST_LIB=      ${PWD}/target/thumbv7m-none-eabi/release/libdro138.a
+# RUST_VARS=    'RUSTFLAGS="-Z macro-backtrace"'
 
 # more varable.. also init submodule rule somewhere
 

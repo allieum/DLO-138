@@ -62,17 +62,18 @@ fn normalize_voltage(voltage: u16) -> i16 {
     crate::adafruit_lcd::HEIGHT + Y_OFFSET - (voltage as i16 - ZERO_VOLTAGE) / ADC_SCALE
 }
 
-pub unsafe fn blink_message<T: Display + LowerHex>(msg: T) {
+// needed?
+pub unsafe fn _blink_message<T: Display + LowerHex>(msg: T) {
     static mut S: crate::debug::HackStr = crate::debug::HackStr::new();
 
     // Clear last message
-    draw_text(&S, BG_COLOR); // todo only do this if changed
+    _draw_text(&S, BG_COLOR); // todo only do this if changed
 
-    S.clear();
+    S._clear();
 
     write!(&mut S, "{:x}", msg).expect("didn't work");
 
-    draw_text(&S, WAVE_COLOR);
+    _draw_text(&S, WAVE_COLOR);
 }
 
 // todo accept &str and do conversion somewhere, maybe from/into
@@ -90,7 +91,7 @@ pub unsafe fn draw_message(msg: &crate::debug::HackStr) {
 }
 
 
-pub unsafe fn draw_text(msg: &crate::debug::HackStr, color: u16) {
+pub unsafe fn _draw_text(msg: &crate::debug::HackStr, color: u16) {
     let lcd = crate::adafruit_lcd::get();
 
     lcd.set_cursor(110, 30);

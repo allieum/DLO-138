@@ -1,11 +1,13 @@
-use core::fmt::Write;
+//use ili9341::Ili9341;
 use stm32f1::stm32f103;
 
 static mut SINGLETON: Option<stm32f103::Peripherals> = None;
 
+
 pub unsafe fn init() {
     SINGLETON = stm32f103::Peripherals::take();
     setup_adc_dma();
+//    ili9341::gpio::Gpio8Interface::new();
 }
 
 pub unsafe fn get() -> &'static stm32f103::Peripherals {
@@ -35,7 +37,7 @@ unsafe fn setup_adc_dma() {
     // Enable DMA requests for ADC1
     peripherals.ADC1.cr2.modify(|_, w| w.dma().enabled());
 
-    let cr = peripherals.ADC1.cr2.read().bits();
+//    let cr = peripherals.ADC1.cr2.read().bits();
 //    crate::debug::print_serial(cr);
 
     peripherals.DMA1.ch1.cr.write(|w| w

@@ -10,6 +10,8 @@ name = "dro138"
 crate-type = ["staticlib"]
 
 [dependencies]
+ili9341 = "0.3.0"
+embedded-hal = "0.2.3"
 
 [dependencies.stm32f1]
 version = "0.11.0"

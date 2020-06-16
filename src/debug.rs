@@ -7,8 +7,8 @@ macro_rules! serial {
 	use core::fmt::Write;
 
 	let mut s = crate::debug::HackStr::new();
-	write!(&mut s, $($args),*).expect("oops");
-	s.write_str("\n");
+	write!(&mut s, $($args),*).expect("write! failed in serial! macro");
+	s.write_str("\n").expect("write_str failed in serial! macro");
 
 	crate::debug::PRINT_SERIAL.unwrap()(s.as_cstr());
     }}
@@ -41,17 +41,6 @@ unsafe fn candy_panic(info: &PanicInfo) -> ! {
     loop {};
 }
 
-pub unsafe fn print(addr: u32) {
-    let mut s = HackStr::new();
-
-    write!(&mut s, "{:#x}", addr).expect("didn't work");
-
-    crate::draw::draw_message(&s);
-
-    loop {}
-}
-
-
 pub struct HackStr {
     length: usize,
     buf: [c_char; 100]
@@ -65,11 +54,8 @@ impl HackStr {
 	}
     }
 
-    pub fn append(&mut self) {
-
-    }
-
-    pub fn clear(&mut self) {
+    // needed?
+    pub fn _clear(&mut self) {
 	self.length = 0;
     }
 
