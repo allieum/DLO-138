@@ -5,6 +5,8 @@ build/**
 arduino/src/dro138.h
 TAGS
 src/bindings.rs
+/dro138_derive/target
+
 
 #todo this is pretty dumb probably
 **/TFTLib/Adafruit_TFTLCD_8bit_STM32.hpp

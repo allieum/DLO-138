@@ -1,4 +1,6 @@
 #![no_std]
+#![feature(never_type)]
+#![feature(const_mut_refs)]
 
 mod bindings;
 mod ctypes;
@@ -6,6 +8,8 @@ mod draw;
 #[macro_use]
 mod debug;
 mod adafruit_lcd;
+mod lcd;
+mod pins;
 mod stm32_peripherals;
 mod sample;
 
@@ -19,8 +23,10 @@ pub unsafe extern "C" fn init_rust(lcd_ptr: *mut c_void, print_serial: fn(*const
     adafruit_lcd::init(lcd_ptr);
     stm32_peripherals::init();
 
-    let lcd = adafruit_lcd::get();
-    lcd.fill_screen(draw::BG_COLOR);
+    lcd::init();
+
+    // let lcd = adafruit_lcd::get();
+    // lcd.fill_screen(draw::BG_COLOR);
 
     //    debug::print_serial("rusty serial");
     serial!("rusty serial {}", 2);
