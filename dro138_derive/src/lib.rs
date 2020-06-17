@@ -14,7 +14,6 @@ pub fn stm32_gpio_output_pin_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse(input).unwrap();
 
     // Build the trait implementation
-    //    impl_hello_macro(&ast)
     impl_stm32_gpio_output_pin(&ast)
 }
 

@@ -1,6 +1,6 @@
 #include <EEPROM.h>
 #include <Adafruit_GFX.h>
-#include "src/dro138.h"
+#include "src/rust.h"
 #include "src/TFTLib/Adafruit_TFTLCD_8bit_STM32.hpp"
 #include "global.h"
 #include "variables.h"
@@ -29,13 +29,10 @@ void setup()	{
 	initIO();
 
 	// load scope config or factory reset to defaults
-	//loadConfig(digitalRead(BTN4) == LOW);
 	loadConfig(digitalRead(BTN4) == LOW);
 
 	// init the IL9341 display
 	initDisplay();
-
-	//	tft.fillScreen(pink_rust());
 
 	init_rust((void*) &tft, print_serial);
 }

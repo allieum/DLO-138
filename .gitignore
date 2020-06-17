@@ -2,7 +2,7 @@
 .\#*
 build/**
 *~
-arduino/src/dro138.h
+arduino/src/rust.h
 TAGS
 src/bindings.rs
 /dro138_derive/target

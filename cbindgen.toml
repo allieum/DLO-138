@@ -1,3 +1,4 @@
 no_includes = true
 
-# todo exclude unnecessary statics
+[export]
+item_types = ["functions"]

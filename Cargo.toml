@@ -6,7 +6,7 @@ edition = "2018"
 build = "build.rs"
 
 [lib]
-name = "dro138"
+name = "rust"
 crate-type = ["staticlib"]
 
 [dependencies]

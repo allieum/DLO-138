@@ -4,10 +4,10 @@ use core::fmt::{Display, Write, LowerHex};
 const _RUST_COLOR: u16 = 0xEB00;
 const PASTEL_PINK: u16 = 0xE4DD;
 const PASTEL_BLUE: u16 = 0x9EDD;
-pub const BLACK: u16 = 0x0000;
+const BLACK: u16 = 0x0000;
 
-pub const WAVE_COLOR: u16 = PASTEL_PINK;
-pub const BG_COLOR: u16 = BLACK;
+const WAVE_COLOR: u16 = PASTEL_PINK;
+const BG_COLOR: u16 = BLACK;
 
 // todo rename draw_wave?
 #[no_mangle]
