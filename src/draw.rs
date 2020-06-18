@@ -48,7 +48,7 @@ fn normalize_voltage_pair(pair: &[u16]) -> (i16, i16) {
 fn normalize_voltage(voltage: u16) -> i16 {
     const ADC_SCALE: i16 = 4; // ?
     const ZERO_VOLTAGE: i16 = 1985; // ?
-    const Y_OFFSET: i16 = -crate::adafruit_lcd::HEIGHT / 2;
+    const Y_OFFSET: i16 = - crate::adafruit_lcd::HEIGHT / 2;
 
     // ugh
     crate::adafruit_lcd::HEIGHT + Y_OFFSET - (voltage as i16 - ZERO_VOLTAGE) / ADC_SCALE

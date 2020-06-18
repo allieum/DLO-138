@@ -1,5 +1,7 @@
 use dro138_derive::Stm32GpioOutputPin;
 
+use stm32f1xx_hal::{adc, prelude::*};
+
 #[derive(Stm32GpioOutputPin)]
 pub struct PB0;
 

@@ -2,11 +2,11 @@
 #![feature(never_type)]
 #![feature(const_mut_refs)]
 
+#[macro_use]
+mod debug;
 mod bindings;
 mod ctypes;
 mod draw;
-#[macro_use]
-mod debug;
 mod adafruit_lcd;
 mod lcd;
 mod pins;
@@ -17,6 +17,7 @@ use ctypes::{c_char, c_void};
 
 // todo make a single extern fn (ie have rust take control up front)
 //      maybe wouldn't need singletons?
+//      also look into cortex_m::singleton macro
 #[no_mangle]
 pub unsafe extern "C" fn init_rust(lcd_ptr: *mut c_void, print_serial: fn(*const c_char)) {
     debug::init(print_serial);

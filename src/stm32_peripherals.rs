@@ -1,5 +1,7 @@
 use stm32f1::stm32f103;
 
+//use stm32f1xx_hal as hal;
+
 static mut SINGLETON: Option<stm32f103::Peripherals> = None;
 
 pub unsafe fn init() {
