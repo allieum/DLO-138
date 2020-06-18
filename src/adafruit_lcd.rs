@@ -3,22 +3,13 @@ use crate::bindings::Adafruit_TFTLCD_8bit_STM32;
 use crate::bindings::Adafruit_TFTLCD_8bit_STM32_fillScreen;
 use crate::ctypes::c_void;
 
-//use ili9341::Ili9341;
-
 pub const WIDTH: usize = 320;
 pub const HEIGHT: i16 = 240;
 
 static mut LCD: Option<Adafruit_TFTLCD_8bit_STM32> = None;
 
-// todo refactor silly pattern
 pub unsafe fn init(lcd_ptr: *mut c_void) {
     LCD = Some(Adafruit_TFTLCD_8bit_STM32::from_ptr(lcd_ptr));
-
-//    let peripherals = crate::stm32_peripherals::get();
-//    peripherals.GPIOA.
-//    ili9341::gpio::Gpio8Interface::new();
-
-//    Ili9341::new
 }
 
 pub unsafe fn get() -> &'static mut Adafruit_TFTLCD_8bit_STM32 {
@@ -26,12 +17,6 @@ pub unsafe fn get() -> &'static mut Adafruit_TFTLCD_8bit_STM32 {
 }
 
 impl Adafruit_TFTLCD_8bit_STM32 {
-    // bleh
-    // pub unsafe fn print(&mut self, msg: &str) {
-    // 	self._base._base.print2(msg.as_ptr() as *const i8);
-    // }
-
-    // meh
     pub unsafe fn print(&mut self, msg: *const i8) {
 	self._base._base.print2(msg);
     }

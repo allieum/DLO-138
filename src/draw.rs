@@ -1,5 +1,4 @@
 use core::fmt::{Display, Write, LowerHex};
-//use core::fmt::Write;
 
 const _RUST_COLOR: u16 = 0xEB00;
 const PASTEL_PINK: u16 = 0xE4DD;
@@ -9,9 +8,8 @@ const BLACK: u16 = 0x0000;
 const WAVE_COLOR: u16 = PASTEL_PINK;
 const BG_COLOR: u16 = BLACK;
 
-// todo rename draw_wave?
 #[no_mangle]
-pub unsafe extern "C" fn draw_waves(_draw_cwaves: extern "C" fn()) {
+pub unsafe extern "C" fn draw_waves() {
     // todo system for storing drawn lines?
 
     // Pick a window centered in the middle of the samples array
@@ -38,12 +36,6 @@ pub unsafe extern "C" fn draw_waves(_draw_cwaves: extern "C" fn()) {
 	    crate::adafruit_lcd::get().draw_line(x, y1, x, y2, WAVE_COLOR);
 	    OLD_POINTS[i] = y1;
 	});
-
-   // let cr = crate::stm32_peripherals::get().DMA1.ch1.cr.read().bits();
-
-   //  crate::draw::blink_message(cr);
-   //  crate::debug::print_serial(cr);
-//    crate::draw::blink_message(crate::sample::WAVE_SAMPLES[0]);
 }
 
 fn normalize_voltage_pair(pair: &[u16]) -> (i16, i16) {
@@ -64,7 +56,7 @@ fn normalize_voltage(voltage: u16) -> i16 {
 
 // needed?
 pub unsafe fn _blink_message<T: Display + LowerHex>(msg: T) {
-    static mut S: crate::debug::HackStr = crate::debug::HackStr::new();
+    static mut S: crate::debug::FixedCStr = crate::debug::FixedCStr::new();
 
     // Clear last message
     _draw_text(&S, BG_COLOR); // todo only do this if changed
@@ -78,7 +70,7 @@ pub unsafe fn _blink_message<T: Display + LowerHex>(msg: T) {
 
 // todo accept &str and do conversion somewhere, maybe from/into
 //unsafe fn draw_message(msg: &str) {
-pub unsafe fn draw_message(msg: &crate::debug::HackStr) {
+pub unsafe fn draw_message(msg: &crate::debug::FixedCStr) {
     let lcd = crate::adafruit_lcd::get();
 
     lcd.fill_screen(PASTEL_BLUE);
@@ -87,16 +79,16 @@ pub unsafe fn draw_message(msg: &crate::debug::HackStr) {
     lcd.set_text_color(BLACK);
     lcd.set_text_size(2);
 
-    lcd.print(msg.as_cstr());
+    lcd.print(msg.as_ptr());
 }
 
 
-pub unsafe fn _draw_text(msg: &crate::debug::HackStr, color: u16) {
+pub unsafe fn _draw_text(msg: &crate::debug::FixedCStr, color: u16) {
     let lcd = crate::adafruit_lcd::get();
 
     lcd.set_cursor(110, 30);
     lcd.set_text_color(color);
     lcd.set_text_size(2);
 
-    lcd.print(msg.as_cstr());
+    lcd.print(msg.as_ptr());
 }

@@ -25,10 +25,5 @@ pub unsafe extern "C" fn init_rust(lcd_ptr: *mut c_void, print_serial: fn(*const
 
     lcd::init();
 
-    // let lcd = adafruit_lcd::get();
-    // lcd.fill_screen(draw::BG_COLOR);
-
-    //    debug::print_serial("rusty serial");
-    serial!("rusty serial {}", 2);
-    serial!("hi");
+    serial!("rusty serial {}", 4.20);
 }

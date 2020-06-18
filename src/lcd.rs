@@ -2,6 +2,7 @@ use ili9341::Ili9341;
 use embedded_hal::digital::v2::OutputPin;
 
 use crate::pins::*;
+use crate::stm32_peripherals::DummyDelay;
 
 // Mappings taken from
 // https://github.com/ardyesp/DLO-138/blob/master/src/TFTLib/Adafruit_TFTLCD_8bit_STM32.h
@@ -24,12 +25,6 @@ fn tft_data_pins() -> &'static mut [&'static mut dyn OutputPin<Error = !>; 8] {
     ];
 
     unsafe { &mut PINS }
-}
-
-// delay could go in peripherals?
-struct DummyDelay;
-impl embedded_hal::blocking::delay::DelayMs<u16> for DummyDelay {
-    fn delay_ms(&mut self, _ms: u16) {}
 }
 
 pub fn init() {

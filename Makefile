@@ -21,15 +21,16 @@ nobindings: compile deploy listen-serial
 
 # todo make it so we don't have to clean here...
 # (rustbindgen / cbindgen order dependency)
+#
 # - could potentially run cbindgen from build script
-# - to get rid of command line dependency and enforce order / correctness ???
+#   to get rid of command line dependency and enforce order / correctness ???
 all: clean cbindgen compile deploy listen-serial
-
-rust:
-	cargo build --release
 
 cbindgen:
 	cbindgen --config cbindgen.toml --crate ${RUST_CRATE} --output ${RUST_H}
+
+rust:
+	cargo build --release
 
 compile: ${OUTPUT_DIR} rust
 	arduino-builder -build-options-file ${ARDUINO_OPTIONS} -verbose -prefs=${ARDUINO_PREFS} -build-path ${OUTPUT_DIR} ${MAIN_INO}

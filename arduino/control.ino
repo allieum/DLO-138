@@ -39,7 +39,7 @@ void controlLoop()	{
 		// request repainting of screen labels in next draw cycle
 		repaintLabels();
 		// draw the waveform
-		draw_waves(clearNDrawSignals);
+		draw_waves();
 		blinkLED();
 		// dump captured data on serial port
 		dumpSamples();
@@ -67,7 +67,7 @@ void captureDisplayCycle(boolean wTimeOut)	{
 	/* indicateCapturingDone(); */
 
 	sample_wave();
-	draw_waves(clearNDrawSignals);
+	draw_waves();
 
 	// inter wait before next sampling
 	if(triggered)

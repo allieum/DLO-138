@@ -1,76 +1,93 @@
-use core::fmt::Write;
+use core::fmt;
 use core::panic::PanicInfo;
 use crate::ctypes::c_char;
 
-macro_rules! serial {
+/// Create and return a FixedCStr using a format string
+macro_rules! c_str {
     ($($args:tt),*) => {{
 	use core::fmt::Write;
 
-	let mut s = crate::debug::HackStr::new();
-	write!(&mut s, $($args),*).expect("write! failed in serial! macro");
-	s.write_str("\n").expect("write_str failed in serial! macro");
+	let mut cstr = crate::debug::FixedCStr::new();
+	write!(&mut cstr, $($args),*).expect("write! failed in c_str! macro");
 
-	crate::debug::PRINT_SERIAL.unwrap()(s.as_cstr());
+	cstr
     }}
 }
 
+/// Send a format string over serial
+macro_rules! serial {
+    ($($args:tt),*) => {{
+	let cstr = c_str!($($args),*);
+	crate::debug::PRINT_SERIAL.unwrap()(cstr.as_ptr());
+    }}
+}
+
+// Pointer to a wrapper around Arduino's Serial.print()
 pub static mut PRINT_SERIAL: Option<fn(*const c_char)> = None;
 
 pub unsafe fn init(print_serial: fn(*const c_char)) {
     PRINT_SERIAL = Some(print_serial);
 }
 
-// pub unsafe fn print_serial<T: Display>(msg: T) {
-//     let mut s = HackStr::new();
-//     write!(&mut s, "{}\n", msg).expect("nothing");
-//     PRINT_SERIAL.unwrap()(s.as_cstr());
-// }
-
 #[panic_handler]
-unsafe fn candy_panic(info: &PanicInfo) -> ! {
+/// Write debug message to screen and over serial.
+unsafe fn stm32_panic(info: &PanicInfo) -> ! {
     let location = info.location().unwrap();
     let (file, line, column) = (location.file(), location.line(), location.column());
 
-    let mut s = HackStr::new();
+    let msg = c_str!("panic @ {} {}:{}", file, line, column);
+    crate::draw::draw_message(&msg);
 
-    // todo abstract hackstr + write into another macro to learn how they work?
-    write!(&mut s, "panic @ {} {}:{}", file, line, column).expect("didn't work");
-
-    crate::draw::draw_message(&s);
+    serial!("panic @ {} {}:{}", file, line, column);
 
     loop {};
 }
 
-pub struct HackStr {
+/// Fixed-size c string with a stack-based buffer
+pub struct FixedCStr {
     length: usize,
-    buf: [c_char; 100]
+    buf: [c_char; FixedCStr::SIZE]
 }
 
-impl HackStr {
-    pub const fn new() -> HackStr {
-	HackStr {
+impl FixedCStr {
+    const SIZE: usize = 100;
+
+    pub const fn new() -> FixedCStr {
+	FixedCStr {
 	    length: 0,
-	    buf: [0; 100]
+	    buf: [0; FixedCStr::SIZE]
 	}
     }
 
-    // needed?
+    // needed? if so, should zero out buf
     pub fn _clear(&mut self) {
 	self.length = 0;
     }
 
-    pub fn as_cstr(&self) -> *const c_char {
+    pub fn as_ptr(&self) -> *const c_char {
 	self.buf.as_ptr()
     }
 }
 
-impl core::fmt::Write for HackStr {
-    // todo bound check
-    fn write_str(&mut self, s: &str) -> core::fmt::Result {
+impl fmt::Write for FixedCStr {
+    fn write_str(&mut self, s: &str) -> fmt::Result {
+	self.length += s.chars().count();
+
+	// Allow one character fewer to allow for a terminating null
+	if self.length > FixedCStr::SIZE - 1 {
+	    panic!("Writing {} to {} would overflow maximum size of {}",
+		   s, self, FixedCStr::SIZE);
+	}
+
 	for c in s.chars() {
 	    self.buf[self.length] = c as c_char;
-	    self.length += 1;
 	}
 	Ok(())
+    }
+}
+
+impl fmt::Display for FixedCStr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+	write!(f, "FixedCStr(length: {}, pointer: {:?})", self.length, self.as_ptr())
     }
 }
