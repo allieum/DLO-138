@@ -1,6 +1,4 @@
 #![no_std]
-#![feature(never_type)]
-#![feature(const_mut_refs)]
 
 #[macro_use]
 pub mod debug;

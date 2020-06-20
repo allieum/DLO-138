@@ -74,9 +74,9 @@ pub unsafe fn draw_message(msg: &crate::debug::FixedCStr) {
 
     lcd.fill_screen(PASTEL_BLUE);
 
-    lcd.set_cursor(110, 30);
+    lcd.set_cursor(75, 30);
     lcd.set_text_color(BLACK);
-    lcd.set_text_size(2);
+    lcd.set_text_size(1);
 
     lcd.print(msg.as_ptr());
 }

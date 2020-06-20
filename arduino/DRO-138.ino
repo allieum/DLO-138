@@ -13,6 +13,7 @@ extern Adafruit_TFTLCD_8bit_STM32 tft;
 
 void print_serial(const char* str) {
 	Serial.print(str);
+	delay(100); // wait enough time for the message to transmit in case we crash soon
 }
 
 // ------------------------
@@ -35,6 +36,8 @@ void setup()	{
 	initDisplay();
 
 	init_rust((void*) &tft, print_serial);
+
+	Serial.print("rust initted");
 }
 
 

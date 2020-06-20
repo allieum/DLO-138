@@ -19,7 +19,11 @@ macro_rules! c_str {
 #[macro_export]
 macro_rules! serial {
     ($($args:tt),*) => {{
-	let cstr = $crate::c_str!($($args),*);
+	use core::fmt::Write;
+
+	let mut cstr = $crate::c_str!($($args),*);
+	writeln!(cstr, "\n").expect("writeln! failed in serial! macro");
+
 	$crate::debug::PRINT_SERIAL.unwrap()(cstr.as_ptr());
     }}
 }
@@ -37,15 +41,15 @@ unsafe fn stm32_panic(info: &PanicInfo) -> ! {
     let location = info.location().unwrap();
     let (file, line, column) = (location.file(), location.line(), location.column());
 
+    serial!("panic @ {} {}:{}", file, line, column);
+
     let msg = c_str!("panic @ {} {}:{}", file, line, column);
     crate::draw::draw_message(&msg);
-
-    serial!("panic @ {} {}:{}", file, line, column);
 
     loop {};
 }
 
-/// Fixed-size c string with a stack-based buffer
+/// Fixed-size C string with a stack-based buffer
 pub struct FixedCStr {
     length: usize,
     buf: [c_char; FixedCStr::SIZE]
@@ -73,17 +77,18 @@ impl FixedCStr {
 
 impl fmt::Write for FixedCStr {
     fn write_str(&mut self, s: &str) -> fmt::Result {
-	self.length += s.chars().count();
-
 	// Allow one character fewer to allow for a terminating null
 	if self.length > FixedCStr::SIZE - 1 {
+	    // todo return fmt::Error instead of panic here
 	    panic!("Writing {} to {} would overflow maximum size of {}",
 		   s, self, FixedCStr::SIZE);
 	}
 
-	for c in s.chars() {
-	    self.buf[self.length] = c as c_char;
+	for (i, c) in s.chars().enumerate() {
+	    self.buf[self.length + i] = c as c_char;
 	}
+	self.length += s.chars().count();
+
 	Ok(())
     }
 }
