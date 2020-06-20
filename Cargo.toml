@@ -5,14 +5,10 @@ authors = ["allie"]
 edition = "2018"
 build = "build.rs"
 
-[lib]
-name = "rust"
-crate-type = ["staticlib"]
-
 [dependencies]
 ili9341 = "0.3.0"
 embedded-hal = "0.2.3"
-dro138_derive = { path = "./dro138_derive" }
+#dro138_derive = { path = "./dro138_derive" } superceded by hal
 
 # todo don't need b/c pulled in by hal?
 [dependencies.stm32f1]

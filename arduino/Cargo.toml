@@ -1,0 +1,12 @@
+[package]
+name = "arduino"
+version = "0.1.0"
+authors = ["allie <wave@sample.org>"]
+edition = "2018"
+
+[lib]
+name = "rust"
+crate-type= ["staticlib"]
+
+[dependencies]
+dro138 = { path = "../" }

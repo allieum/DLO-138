@@ -8,8 +8,7 @@ const BLACK: u16 = 0x0000;
 const WAVE_COLOR: u16 = PASTEL_PINK;
 const BG_COLOR: u16 = BLACK;
 
-#[no_mangle]
-pub unsafe extern "C" fn draw_waves() {
+pub unsafe fn draw_waves() {
     // todo system for storing drawn lines?
 
     // Pick a window centered in the middle of the samples array

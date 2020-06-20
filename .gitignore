@@ -11,6 +11,8 @@ src/bindings.rs
 #todo this is pretty dumb probably
 **/TFTLib/Adafruit_TFTLCD_8bit_STM32.hpp
 
+/arduino/target
+
 #Added by cargo
 
 /target

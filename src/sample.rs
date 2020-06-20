@@ -1,8 +1,7 @@
 pub const SAMPLE_DEPTH: usize = 2048;
 pub static mut WAVE_SAMPLES: [u16; SAMPLE_DEPTH] = [0; SAMPLE_DEPTH];
 
-#[no_mangle]
-pub unsafe extern "C" fn sample_wave() {
+pub unsafe fn sample_wave() {
     for sample in WAVE_SAMPLES.iter_mut() {
     	*sample = sample_adc1();
     }

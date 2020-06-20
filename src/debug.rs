@@ -3,11 +3,12 @@ use core::panic::PanicInfo;
 use crate::ctypes::c_char;
 
 /// Create and return a FixedCStr using a format string
+#[macro_export]
 macro_rules! c_str {
     ($($args:tt),*) => {{
 	use core::fmt::Write;
 
-	let mut cstr = crate::debug::FixedCStr::new();
+	let mut cstr = $crate::debug::FixedCStr::new();
 	write!(&mut cstr, $($args),*).expect("write! failed in c_str! macro");
 
 	cstr
@@ -15,10 +16,11 @@ macro_rules! c_str {
 }
 
 /// Send a format string over serial
+#[macro_export]
 macro_rules! serial {
     ($($args:tt),*) => {{
-	let cstr = c_str!($($args),*);
-	crate::debug::PRINT_SERIAL.unwrap()(cstr.as_ptr());
+	let cstr = $crate::c_str!($($args),*);
+	$crate::debug::PRINT_SERIAL.unwrap()(cstr.as_ptr());
     }}
 }
 
