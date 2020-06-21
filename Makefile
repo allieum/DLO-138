@@ -30,7 +30,7 @@ CBINDGEN_CONFIG=${PWD}/cbindgen.toml
 
 ARDUINO_PREFS=  'custom.dro138.staticlib="${RUST_LIB}"'
 
-nobindings: build-arduino deploy listen-serial
+nobindings: build-arduino deploy-arduino listen-serial
 
 # todo make it so we don't have to clean here...
 # (rustbindgen / cbindgen order dependency)
