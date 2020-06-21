@@ -9,11 +9,12 @@ pub unsafe fn sample_wave() {
 
 // todo replace with DMA
 unsafe fn sample_adc1() -> u16 {
-    let peripherals = crate::stm32_peripherals::get();
+    // let peripherals = crate::stm32_peripherals::get();
 
-    // Wait for a conversion to complete
-    while peripherals.ADC1.sr.read().eoc().is_not_complete() {}
+    // // Wait for a conversion to complete
+    // while peripherals.ADC1.sr.read().eoc().is_not_complete() {}
 
-    // Get data register bits
-    peripherals.ADC1.dr.read().data().bits()
+    // // Get data register bits
+    // peripherals.ADC1.dr.read().data().bits()
+    2020
 }

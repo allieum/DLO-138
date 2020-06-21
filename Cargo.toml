@@ -1,3 +1,5 @@
+cargo-features = ["strip"]
+
 [package]
 name = "dro138"
 version = "0.1.0"
@@ -8,6 +10,7 @@ build = "build.rs"
 [dependencies]
 ili9341 = "0.3.0"
 embedded-hal = "0.2.3"
+cortex-m-rt = "0.6.12"
 #dro138_derive = { path = "./dro138_derive" } superceded by hal
 
 # todo don't need b/c pulled in by hal?
@@ -21,3 +24,7 @@ features = ["stm32f103", "rt"]
 
 [build-dependencies]
 bindgen = "0.54.0"
+
+[profile.release]
+opt-level = "z"  # Optimize for size.
+strip = "symbols"

@@ -6,6 +6,7 @@ arduino/src/rust.h
 TAGS
 src/bindings.rs
 /dro138_derive/target
+/defunct_macro
 
 #todo this is pretty dumb probably
 **/TFTLib/Adafruit_TFTLCD_8bit_STM32.hpp

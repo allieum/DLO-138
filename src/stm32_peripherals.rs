@@ -1,47 +1,47 @@
-use stm32f1::stm32f103;
-
-use stm32f1xx_hal::{pac, prelude::*, serial::{Config, Serial}};
+use stm32f1xx_hal::{pac::Peripherals, prelude::*, serial::{Config, Serial}};
 
 use core::fmt::Write;
 
-static mut SINGLETON: Option<stm32f103::Peripherals> = None;
+// static mut SINGLETON: Option<stm32f103::Peripherals> = None;
 
-pub unsafe fn init() {
-    serial!("yo");
-    setup_serial();
+pub fn init() {
+    let peripherals = Peripherals::take().unwrap();
+
+    setup_serial(peripherals);
+
+    // todo need macro_rules to pass peripherals around multiple places to break this up?
+    //_setup_adc_dma(&mut peripherals);
 
 //    SINGLETON = pac::Peripherals::take();
-//    setup_adc_dma();
 }
 
-pub unsafe fn get() -> &'static stm32f103::Peripherals {
-    SINGLETON.as_ref().unwrap()
-}
+// pub unsafe fn get() -> &'static stm32f103::Peripherals {
+//     SINGLETON.as_ref().unwrap()
+// }
 
-unsafe fn setup_serial() {
-    serial!("hi");
+fn setup_serial(peripherals: Peripherals) {
+    //serial!("hi");
 
     // todo gotta make this once. maybe create struct to own the hal bits?
-    let peripherals = pac::Peripherals::take().unwrap();
 
     let mut flash = peripherals.FLASH.constrain();
     let mut rcc = peripherals.RCC.constrain();
 
-    serial!("i'm");
+    //serial!("i'm");
 
     let clocks = rcc.cfgr.freeze(&mut flash.acr);
 
-    serial!("slime");
+    //serial!("slime");
 
     let mut afio = peripherals.AFIO.constrain(&mut rcc.apb2);
     let mut gpioa = peripherals.GPIOA.split(&mut rcc.apb2);
 
-    serial!("grime");
+    //serial!("grime");
 
     let tx = gpioa.pa9.into_alternate_push_pull(&mut gpioa.crh);
     let rx = gpioa.pa10;
 
-    serial!("possibly");
+    //serial!("possibly");
 
     let serial = Serial::usart1(
 	peripherals.USART1,
@@ -52,15 +52,15 @@ unsafe fn setup_serial() {
 	&mut rcc.apb2
     );
 
-    serial!("alive");
+    //serial!("alive");
 
     let (mut tx, _rx) = serial.split();
 
     writeln!(tx, "native uart, you art smart").unwrap();
 }
 
-unsafe fn _setup_adc_dma() {
-    let peripherals = get();
+// todo rewrite with hal
+unsafe fn _setup_adc_dma(peripherals: &mut Peripherals) {
 
     // Write the address of ADC1's data register to the
     // DMA's peripheral address register.
