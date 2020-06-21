@@ -30,6 +30,16 @@ pub unsafe extern "C" fn init_rust(lcd_ptr: *mut c_void, print_serial: fn(*const
     stm32_peripherals::init();
 }
 
+// For tinydro.ino
+#[no_mangle]
+pub unsafe extern "C" fn tiny_init(print_serial: fn(*const c_char)) {
+    debug::init(print_serial);
+
+    serial!("made it this far");
+
+    stm32_peripherals::init();
+}
+
 #[no_mangle]
 pub unsafe extern "C" fn draw_waves() {
     draw::draw_waves();

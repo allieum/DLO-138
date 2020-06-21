@@ -7,7 +7,7 @@ use core::fmt::Write;
 pub fn init() {
     let peripherals = Peripherals::take().unwrap();
 
-    setup_serial(peripherals);
+    unsafe { setup_serial(peripherals) };
 
     // todo need macro_rules to pass peripherals around multiple places to break this up?
     //_setup_adc_dma(&mut peripherals);
@@ -19,29 +19,29 @@ pub fn init() {
 //     SINGLETON.as_ref().unwrap()
 // }
 
-fn setup_serial(peripherals: Peripherals) {
-    //serial!("hi");
+unsafe fn setup_serial(peripherals: Peripherals) {
+    serial!("hi");
 
     // todo gotta make this once. maybe create struct to own the hal bits?
 
     let mut flash = peripherals.FLASH.constrain();
     let mut rcc = peripherals.RCC.constrain();
 
-    //serial!("i'm");
+    serial!("i'm");
 
     let clocks = rcc.cfgr.freeze(&mut flash.acr);
 
-    //serial!("slime");
+    serial!("slime");
 
     let mut afio = peripherals.AFIO.constrain(&mut rcc.apb2);
     let mut gpioa = peripherals.GPIOA.split(&mut rcc.apb2);
 
-    //serial!("grime");
+    serial!("grime");
 
     let tx = gpioa.pa9.into_alternate_push_pull(&mut gpioa.crh);
     let rx = gpioa.pa10;
 
-    //serial!("possibly");
+    serial!("possibly");
 
     let serial = Serial::usart1(
 	peripherals.USART1,
@@ -52,7 +52,7 @@ fn setup_serial(peripherals: Peripherals) {
 	&mut rcc.apb2
     );
 
-    //serial!("alive");
+    serial!("alive");
 
     let (mut tx, _rx) = serial.split();
 
