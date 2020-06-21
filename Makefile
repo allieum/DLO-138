@@ -39,7 +39,10 @@ nobindings: build-arduino deploy-arduino listen-serial
 #   to get rid of command line dependency and enforce order / correctness ???
 all: clean cbindgen build-arduino deploy-arduino listen-serial
 
-tiny: build-tiny-arduino deploy-tiny listen-serial
+tiny: cp-rust build-tiny-arduino deploy-tiny listen-serial
+
+cp-rust: build-arduino-rust-lib
+	cp ${RUST_H} ${TINY_DIR}
 
 build-rust:
 	cargo build --release
