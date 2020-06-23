@@ -1,8 +1,34 @@
+use stm32f1::stm32f103::GPIOA;
+
 use stm32f1xx_hal::{pac::Peripherals, prelude::*, serial::{Config, Serial}};
 
 use core::fmt::Write;
 
 // static mut SINGLETON: Option<stm32f103::Peripherals> = None;
+
+
+// fn set_high() {
+//     // NOTE(unsafe) atomic write to a stateless register
+//     Ok(unsafe { (*GPIOA::ptr()).bsrr.write(|w| w.bits(1 << self.i)) })
+// }
+
+// fn set_low() {
+//     // NOTE(unsafe) atomic write to a stateless register
+//     Ok(unsafe { (*GPIOA::ptr()).bsrr.write(|w| w.bits(1 << (16 + self.i))) })
+// }
+
+
+
+#[no_mangle]
+pub unsafe extern "C" fn blinka() {
+//    let peripherals = Peripherals::take().unwrap();
+
+    (*GPIOA::ptr()).bsrr.write(|w| w.bs15().clear_bit());
+//    peripherals.GPIOA.bsrr.write(|w| w.bs15().clear_bit());
+    serial!("blink?");
+    (*GPIOA::ptr()).bsrr.write(|w| w.bs15().set_bit());
+    serial!("blank..");
+}
 
 pub fn init() {
     let peripherals = Peripherals::take().unwrap();
@@ -20,28 +46,26 @@ pub fn init() {
 // }
 
 unsafe fn setup_serial(peripherals: Peripherals) {
-    serial!("hi");
-
-    // todo gotta make this once. maybe create struct to own the hal bits?
+    //serial!("hi");
 
     let mut flash = peripherals.FLASH.constrain();
     let mut rcc = peripherals.RCC.constrain();
 
-    serial!("i'm");
+    //serial!("i'm");
 
     let clocks = rcc.cfgr.freeze(&mut flash.acr);
 
-    serial!("slime");
+    //serial!("slime");
 
     let mut afio = peripherals.AFIO.constrain(&mut rcc.apb2);
     let mut gpioa = peripherals.GPIOA.split(&mut rcc.apb2);
 
-    serial!("grime");
+    //serial!("grime");
 
     let tx = gpioa.pa9.into_alternate_push_pull(&mut gpioa.crh);
     let rx = gpioa.pa10;
 
-    serial!("possibly");
+    //serial!("possibly");
 
     let serial = Serial::usart1(
 	peripherals.USART1,
@@ -52,11 +76,11 @@ unsafe fn setup_serial(peripherals: Peripherals) {
 	&mut rcc.apb2
     );
 
-    serial!("alive");
+    //serial!("alive");
 
     let (mut tx, _rx) = serial.split();
 
-    writeln!(tx, "native uart, you art smart").unwrap();
+    writeln!(tx, "meep").unwrap();
 }
 
 // todo rewrite with hal

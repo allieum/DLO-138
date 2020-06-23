@@ -35,16 +35,16 @@ pub unsafe fn init(print_serial: fn(*const c_char)) {
     PRINT_SERIAL = Some(print_serial);
 }
 
-#[panic_handler]
 /// Write debug message to screen and over serial.
+#[panic_handler]
 unsafe fn stm32_panic(info: &PanicInfo) -> ! {
     let location = info.location().unwrap();
     let (file, line, column) = (location.file(), location.line(), location.column());
 
     serial!("panic @ {} {}:{}", file, line, column);
 
-    let msg = c_str!("panic @ {} {}:{}", file, line, column);
-    crate::draw::draw_message(&msg);
+//    let msg = c_str!("panic @ {} {}:{}", file, line, column);
+    // crate::draw::draw_message(&msg);
 
     loop {};
 }

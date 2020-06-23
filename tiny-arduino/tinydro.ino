@@ -15,7 +15,18 @@ void setup()	{
 
 		print_serial("tiny hi");
 
-	tiny_init(print_serial);
+
+		tiny_init(print_serial);
+
+		pinMode(PA15, OUTPUT);
+}
+
+void blinkLED() {
+	digitalWrite(PA15, 0);
+	delay(200);
+	digitalWrite(PA15, 1);
+
+	delay(500);
 }
 
 
@@ -23,5 +34,6 @@ void setup()	{
 // ------------------------
 void loop()	{
 // ------------------------
-	print_serial("whee.");
+	blinka();
+	blinkLED();
 }

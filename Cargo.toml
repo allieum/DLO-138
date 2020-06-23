@@ -9,18 +9,22 @@ build = "build.rs"
 
 [dependencies]
 ili9341 = "0.3.0"
-embedded-hal = "0.2.3"
-cortex-m-rt = "0.6.12"
-#dro138_derive = { path = "./dro138_derive" } superceded by hal
+embedded-hal = "0.2.3" # is real?
+nb = "0.1.2"
+cortex-m = "0.6.2"
+panic-halt = "0.2.0"
 
-# todo don't need b/c pulled in by hal?
 [dependencies.stm32f1]
 version = "0.11.0"
 features = ["stm32f103"]
 
+[dependencies.cortex-m-rt]
+version = "0.6.12"
+features= ["device"]
+
 [dependencies.stm32f1xx-hal]
 version = "0.6.0"
-features = ["stm32f103", "rt"]
+features = ["rt", "stm32f103", "medium"]
 
 [build-dependencies]
 bindgen = "0.54.0"
@@ -28,3 +32,5 @@ bindgen = "0.54.0"
 [profile.release]
 opt-level = "z"  # Optimize for size.
 strip = "symbols"
+
+#dro138_derive = { path = "./dro138_derive" } superceded by hal

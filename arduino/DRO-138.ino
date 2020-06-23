@@ -38,12 +38,16 @@ void setup()	{
 	init_rust((void*) &tft, print_serial);
 
 	Serial.print("rust initted");
+
+	pinMode(PA15, OUTPUT);
 }
-
-
 
 // ------------------------
 void loop()	{
 // ------------------------
-	controlLoop();
+//	controlLoop();
+	Serial.print("blonk ");
+	blinkLED();
+	delay(500);
+	Serial.print(PA15); // what are LOW/HIGH?
 }

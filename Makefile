@@ -1,3 +1,4 @@
+
 # todo etags, submodule init
 
 ARDUINO_DIR=    ${PWD}/arduino
@@ -26,10 +27,16 @@ RUST_LIB=      	${RUST_LIB_OUT}/librust.a
 RUST_H=        	${ARDUINO_DIR}/src/rust.h
 RUST_BINDINGS=  ${PWD}/src/bindings.rs
 
+# todo print individual segments. look into makefile function
+GET_SIZE_ROW=	Total
+GET_SIZE_CMD=	size -A --total ${RUST_BIN} | grep ${GET_SIZE_ROW} | grep -oE "[^ ]+$$" | numfmt --to=iec-i --suffix=B
+SIZE_ARGS = 	-A ${RUST_BIN}
+
 CBINDGEN_CONFIG=${PWD}/cbindgen.toml
 
 ARDUINO_PREFS=  'custom.dro138.staticlib="${RUST_LIB}"'
 
+# todo don't make this default
 nobindings: build-arduino deploy-arduino listen-serial
 
 # todo make it so we don't have to clean here...
@@ -39,6 +46,8 @@ nobindings: build-arduino deploy-arduino listen-serial
 #   to get rid of command line dependency and enforce order / correctness ???
 all: clean cbindgen build-arduino deploy-arduino listen-serial
 
+rust: build-rust print-size deploy-rust listen-serial
+
 tiny: cp-rust build-tiny-arduino deploy-tiny listen-serial
 
 cp-rust: build-arduino-rust-lib
@@ -46,6 +55,9 @@ cp-rust: build-arduino-rust-lib
 
 build-rust:
 	cargo build --release
+
+print-size:
+	exec ${GET_SIZE_CMD}
 
 build-arduino-rust-lib:
 	cd ${ARDUINO_DIR} && cargo build --release
