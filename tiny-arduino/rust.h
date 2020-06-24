@@ -9,6 +9,7 @@ void sample_wave();
 
 void tiny_init(void (*print_serial)(const char*));
 
-void blinka();
+void blinka(void (*on)(), void (*off)());
+
 
 } // extern "C"

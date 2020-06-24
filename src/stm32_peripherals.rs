@@ -17,17 +17,19 @@ use core::fmt::Write;
 //     Ok(unsafe { (*GPIOA::ptr()).bsrr.write(|w| w.bits(1 << (16 + self.i))) })
 // }
 
-
-
 #[no_mangle]
-pub unsafe extern "C" fn blinka() {
-//    let peripherals = Peripherals::take().unwrap();
+pub unsafe extern "C" fn blinka(on: fn(), off: fn()) {
+    let p = Peripherals::steal();
 
-    (*GPIOA::ptr()).bsrr.write(|w| w.bs15().clear_bit());
-//    peripherals.GPIOA.bsrr.write(|w| w.bs15().clear_bit());
-    serial!("blink?");
-    (*GPIOA::ptr()).bsrr.write(|w| w.bs15().set_bit());
-    serial!("blank..");
+    // reset to low (on)
+    p.GPIOA.bsrr.write(|w| w.br15().set_bit());
+    let odr_bits = p.GPIOA.odr.read().bits() as u16;
+    serial!("{:#018b}", odr_bits);
+
+    // set to high (off)
+    p.GPIOA.bsrr.write(|w| w.bs15().set_bit());
+    let odr_bits = p.GPIOA.odr.read().bits() as u16;
+    serial!("{:#018b}", odr_bits);
 }
 
 pub fn init() {

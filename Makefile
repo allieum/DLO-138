@@ -36,6 +36,8 @@ CBINDGEN_CONFIG=${PWD}/cbindgen.toml
 
 ARDUINO_PREFS=  'custom.dro138.staticlib="${RUST_LIB}"'
 
+FLASH_FLAGS=	 -b ${BAUD_RATE} -w ${OUTPUT_BIN} -v ${SERIAL_DEVICE}
+
 # todo don't make this default
 nobindings: build-arduino deploy-arduino listen-serial
 
@@ -48,7 +50,8 @@ all: clean cbindgen build-arduino deploy-arduino listen-serial
 
 rust: build-rust print-size deploy-rust listen-serial
 
-tiny: cp-rust build-tiny-arduino deploy-tiny listen-serial
+# todo wrangle rust.h
+tiny: build-tiny-arduino deploy-tiny listen-serial
 
 cp-rust: build-arduino-rust-lib
 	cp ${RUST_H} ${TINY_DIR}
@@ -80,8 +83,9 @@ deploy-tiny:
 deploy-rust:
 	OUTPUT_BIN=${RUST_BIN} make _deploy
 
+# retry because this 'randomly' fails sometimes (timing issue?)
 _deploy:
-	stm32flash -b ${BAUD_RATE} -w ${OUTPUT_BIN} -v ${SERIAL_DEVICE}
+	stm32flash ${FLASH_FLAGS} || stm32flash ${FLASH_FLAGS}
 
 listen-serial:
 	socat stdio ${SERIAL_DEVICE}
