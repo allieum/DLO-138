@@ -1,10 +1,11 @@
-use stm32f1::stm32f103::GPIOA;
+// use stm32f1::stm32f103::GPIOA;
 
+use embedded_hal::digital::v2::OutputPin;
 use stm32f1xx_hal::{pac::Peripherals, prelude::*, serial::{Config, Serial}};
 
 use core::fmt::Write;
 
-// static mut SINGLETON: Option<stm32f103::Peripherals> = None;
+// static mut SINGLETON: Option<stm32f103::Peripherals> = Nonve;
 
 
 // fn set_high() {
@@ -19,33 +20,57 @@ use core::fmt::Write;
 
 #[no_mangle]
 pub unsafe extern "C" fn blinka(on: fn(), off: fn()) {
-    let p = Peripherals::steal();
 
-    // reset to low (on)
-    p.GPIOA.bsrr.write(|w| w.br15().set_bit());
-    let odr_bits = p.GPIOA.odr.read().bits() as u16;
-    serial!("{:#018b}", odr_bits);
+    hal_blink();
 
-    // set to high (off)
-    p.GPIOA.bsrr.write(|w| w.bs15().set_bit());
-    let odr_bits = p.GPIOA.odr.read().bits() as u16;
-    serial!("{:#018b}", odr_bits);
+    // let p = Peripherals::steal();
+
+    // // reset to low (on)
+    // p.GPIOA.bsrr.write(|w| w.br15().set_bit());
+    // let odr_bits = p.GPIOA.odr.read().bits() as u16;
+    // serial!("{:#018b}", odr_bits);
+
+    // // set to high (off)
+    // p.GPIOA.bsrr.write(|w| w.bs15().set_bit());
+    // let odr_bits = p.GPIOA.odr.read().bits() as u16;
+    // serial!("{:#018b}", odr_bits);
 }
 
 pub fn init() {
     let peripherals = Peripherals::take().unwrap();
 
     unsafe { setup_serial(peripherals) };
-
-    // todo need macro_rules to pass peripherals around multiple places to break this up?
-    //_setup_adc_dma(&mut peripherals);
-
-//    SINGLETON = pac::Peripherals::take();
 }
 
 // pub unsafe fn get() -> &'static stm32f103::Peripherals {
 //     SINGLETON.as_ref().unwrap()
 // }
+
+unsafe fn hal_blink() {
+    let dp = Peripherals::steal();
+    let mut rcc = dp.RCC.constrain();
+
+    serial!("got things");
+
+    let mut gpioa = dp.GPIOA.split(&mut rcc.apb2);
+    let gpiob = dp.GPIOB.split(&mut rcc.apb2);
+    let mut afio = dp.AFIO.constrain(&mut rcc.apb2);
+
+    serial!("got other things");
+
+    let (pa15, _pb3, _pbq4) = afio.mapr.disable_jtag(gpioa.pa15, gpiob.pb3, gpiob.pb4);
+    let mut led = pa15.into_push_pull_output(&mut gpioa.crh);
+
+    serial!("got light things");
+
+    led.set_low().unwrap();
+
+    serial!("set light thing");
+
+    led.set_high().unwrap();
+
+    serial!("set light thing other way");
+}
 
 unsafe fn setup_serial(peripherals: Peripherals) {
     //serial!("hi");

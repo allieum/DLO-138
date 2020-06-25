@@ -9,7 +9,7 @@ void print_serial(const char* str) {
 void setup()	{
 // ------------------------
   // suggestion from https://github.com/ardyesp/DLO-138/issues/11#issuecomment-413483903
-	afio_cfg_debug_ports(AFIO_DEBUG_NONE);
+	/* afio_cfg_debug_ports(AFIO_DEBUG_NONE); */
 
 		Serial.begin(115200);
 
@@ -17,7 +17,7 @@ void setup()	{
 
 		tiny_init(print_serial);
 
-		pinMode(PA15, OUTPUT);
+		/* pinMode(PA15, OUTPUT); */
 }
 
 void blinkLED() {
