@@ -1,5 +1,5 @@
 
-# todo etags, submodule init
+# todo etags, submodule init, gdb?
 
 ARDUINO_DIR=    ${PWD}/arduino
 ARDUINO_OUT_DIR=${PWD}/build
@@ -38,6 +38,25 @@ ARDUINO_PREFS=  'custom.dro138.staticlib="${RUST_LIB}"'
 
 FLASH_FLAGS=	 -b ${BAUD_RATE} -w ${OUTPUT_BIN} -v ${SERIAL_DEVICE}
 
+OPENOCD_FLAGS=   -f interface/stlink.cfg -f target/stm32f1x.cfg
+OPENOCD_SCRIPT=  ./flash-and-run.expect
+OPENOCD_KILL=    pkill openocd
+TELNET_KILL=     pkill telnet
+
+all: build-rust print-size swd
+
+swd: clean-prev-swd
+#	# OpenOCD runs detached and its output is interleaved with the telnet session
+	openocd ${OPENOCD_FLAGS} & ${OPENOCD_SCRIPT} ${RUST_BIN} && ${OPENOCD_KILL}
+
+clean-prev-swd: kill-telnet kill-openocd
+
+kill-openocd:
+	pkill openocd || exit 0
+
+kill-telnet:
+	pkill telnet || exit 0
+
 # todo don't make this default
 nobindings: build-arduino deploy-arduino listen-serial
 
@@ -46,7 +65,7 @@ nobindings: build-arduino deploy-arduino listen-serial
 #
 # - could potentially run cbindgen from build script
 #   to get rid of command line dependency and enforce order / correctness ???
-all: clean cbindgen build-arduino deploy-arduino listen-serial
+#all: clean cbindgen build-arduino deploy-arduino listen-serial
 
 rust: build-rust print-size deploy-rust listen-serial
 

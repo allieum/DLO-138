@@ -1,0 +1,25 @@
+#!/usr/bin/expect
+
+# Connect to OpenOCD telnet session, flashing and running the input binary
+# todo more output validation
+
+set timeout 20
+
+set binary [lindex $argv 0]
+
+spawn telnet localhost 4444
+expect ">"
+
+send "reset init\n"
+expect ">"
+
+send "flash write_image erase $binary\n"
+expect ">"
+
+send "arm semihosting enable\n"
+expect ">"
+
+send "reset run\n"
+expect ">"
+
+interact
