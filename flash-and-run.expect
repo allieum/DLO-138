@@ -19,7 +19,7 @@ expect ">"
 send "arm semihosting enable\n"
 expect ">"
 
-send "reset run\n"
+send "reset run\n\n\n"
 expect ">"
 
 interact

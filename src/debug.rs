@@ -1,3 +1,5 @@
+use cortex_m_semihosting::dbg;
+
 use core::fmt;
 use core::panic::PanicInfo;
 use crate::ctypes::c_char;
@@ -38,13 +40,10 @@ pub unsafe fn init(print_serial: fn(*const c_char)) {
 /// Write debug message to screen and over serial.
 #[panic_handler]
 unsafe fn stm32_panic(info: &PanicInfo) -> ! {
-    let location = info.location().unwrap();
-    let (file, line, column) = (location.file(), location.line(), location.column());
+    // let location = info.location().unwrap();
+    // let (file, line, column) = (location.file(), location.line(), location.column());
 
-    serial!("panic @ {} {}:{}", file, line, column);
-
-//    let msg = c_str!("panic @ {} {}:{}", file, line, column);
-    // crate::draw::draw_message(&msg);
+    dbg!("{}", info);
 
     loop {};
 }

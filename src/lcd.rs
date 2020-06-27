@@ -34,13 +34,15 @@ pub fn init() {
     let periphs = pac::Peripherals::take().unwrap();
 
     let mut rcc = periphs.RCC.constrain();
-    let gpioa = periphs.GPIOA.split(&mut rcc.apb2);
+    let mut gpioa = periphs.GPIOA.split(&mut rcc.apb2);
     let mut gpiob = periphs.GPIOB.split(&mut rcc.apb2);
     let mut gpioc = periphs.GPIOC.split(&mut rcc.apb2);
     let mut afio = periphs.AFIO.constrain(&mut rcc.apb2);
 
-    let (_pa15, pb3, pb4) = afio.mapr.disable_jtag(gpioa.pa15, gpiob.pb3, gpiob.pb4);
+    let (pa15, pb3, pb4) = afio.mapr.disable_jtag(gpioa.pa15, gpiob.pb3, gpiob.pb4);
 
+    let mut led = pa15.into_push_pull_output(&mut gpioa.crh);
+    led.set_low().unwrap();
 
 //    let get_output = |data_pin: &mut dyn OutputPin<Error = _> | data_pin.into_push_pull_output(&mut gpioa.crl);
 

@@ -1,9 +1,11 @@
 // use stm32f1::stm32f103::GPIOA;
 
 use embedded_hal::digital::v2::OutputPin;
-use stm32f1xx_hal::{pac::Peripherals, prelude::*, serial::{Config, Serial}};
+use stm32f1xx_hal::{pac::Peripherals, prelude::*, serial::{Config, Serial}, timer::Timer};
 
 use core::fmt::Write;
+
+use nb::block;
 
 // static mut SINGLETON: Option<stm32f103::Peripherals> = Nonve;
 
@@ -37,39 +39,49 @@ pub unsafe extern "C" fn blinka(on: fn(), off: fn()) {
 }
 
 pub fn init() {
-    let peripherals = Peripherals::take().unwrap();
+    // let peripherals = Peripherals::take().unwrap();
 
-    unsafe { setup_serial(peripherals) };
+    // unsafe { setup_serial(peripherals) };
+
+    hal_blink();
 }
 
 // pub unsafe fn get() -> &'static stm32f103::Peripherals {
 //     SINGLETON.as_ref().unwrap()
 // }
 
-unsafe fn hal_blink() {
-    let dp = Peripherals::steal();
+fn hal_blink() {
+    // Get access to the core peripherals from the cortex-m crate
+    let cp = cortex_m::Peripherals::take().unwrap();
+    // Get access to the device specific peripherals from the peripheral access crate
+    let dp = Peripherals::take().unwrap();
+
+    // Take ownership over the raw flash and rcc devices and convert them into the corresponding
+    // HAL structs
+    let mut flash = dp.FLASH.constrain();
     let mut rcc = dp.RCC.constrain();
 
-    serial!("got things");
+    // Freeze the configuration of all the clocks in the system and store the frozen frequencies in
+    // `clocks`
+    let clocks = rcc.cfgr.freeze(&mut flash.acr);
 
+    // Acquire the GPIOC peripheral
     let mut gpioa = dp.GPIOA.split(&mut rcc.apb2);
     let gpiob = dp.GPIOB.split(&mut rcc.apb2);
     let mut afio = dp.AFIO.constrain(&mut rcc.apb2);
 
-    serial!("got other things");
-
     let (pa15, _pb3, _pbq4) = afio.mapr.disable_jtag(gpioa.pa15, gpiob.pb3, gpiob.pb4);
     let mut led = pa15.into_push_pull_output(&mut gpioa.crh);
 
-    serial!("got light things");
+    let mut timer = Timer::syst(cp.SYST, &clocks).start_count_down(4.hz());
 
-    led.set_low().unwrap();
-
-    serial!("set light thing");
-
-    led.set_high().unwrap();
-
-    serial!("set light thing other way");
+    // Wait for the timer to trigger an update and change the state of the LED
+    loop {
+        block!(timer.wait()).unwrap();
+        led.set_high().unwrap();
+        block!(timer.wait()).unwrap();
+        led.set_low().unwrap();
+    }
 }
 
 unsafe fn setup_serial(peripherals: Peripherals) {
