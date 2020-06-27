@@ -2,7 +2,7 @@
 #![no_main]
 
 // use core::fmt::Write;
-use cortex_m_semihosting::{dbg, hprintln};
+use cortex_m_semihosting::hprintln;
 use cortex_m_rt::entry;
 // use stm32f1xx_hal::{pac, prelude::*, serial::{Config, Serial}};
 
@@ -14,9 +14,10 @@ fn main() -> ! {
     // eh could still be macro_rules if laze..
     // todo ftdi still way faster... could try to use it first, fall
     // back if it fails / isn't set up yet. maybe implement fast dbg!
-    hprintln!("hello, it's me, scope").unwrap();
+    // hprintln!("hello, it's me, scope").unwrap();
 
-    stm32_peripherals::init();
+    // stm32_peripherals::init();
+     lcd::init();
 
     loop {}
 }

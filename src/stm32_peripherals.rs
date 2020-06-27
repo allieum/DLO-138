@@ -21,7 +21,7 @@ use nb::block;
 // }
 
 #[no_mangle]
-pub unsafe extern "C" fn blinka(on: fn(), off: fn()) {
+pub unsafe extern "C" fn blinka(_on: fn(), _off: fn()) {
 
     hal_blink();
 

@@ -16,8 +16,8 @@ expect ">"
 send "flash write_image erase $binary\n"
 expect ">"
 
-send "arm semihosting enable\n"
-expect ">"
+# send "arm semihosting enable\n"
+# expect ">"
 
 send "reset run\n\n\n"
 expect ">"

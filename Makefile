@@ -1,4 +1,3 @@
-
 # todo etags, submodule init, gdb?
 
 ARDUINO_DIR=    ${PWD}/arduino
@@ -44,6 +43,9 @@ OPENOCD_KILL=    pkill openocd
 TELNET_KILL=     pkill telnet
 
 all: build-rust print-size swd
+
+openocd:
+	openocd ${OPENOCD_FLAGS}
 
 swd: clean-prev-swd
 #	# OpenOCD runs detached and its output is interleaved with the telnet session
