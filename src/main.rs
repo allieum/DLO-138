@@ -2,11 +2,11 @@
 #![no_main]
 
 // use core::fmt::Write;
-use cortex_m_semihosting::hprintln;
+// use cortex_m_semihosting::hprintln;
 use cortex_m_rt::entry;
 // use stm32f1xx_hal::{pac, prelude::*, serial::{Config, Serial}};
 
-use dro138::{lcd, stm32_peripherals};
+use dro138::lcd;
 
 
 #[entry]
@@ -17,7 +17,7 @@ fn main() -> ! {
     // hprintln!("hello, it's me, scope").unwrap();
 
     // stm32_peripherals::init();
-     lcd::init();
+    lcd::init();
 
     loop {}
 }

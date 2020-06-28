@@ -3,7 +3,7 @@
 #[macro_use]
 pub mod debug;
 pub mod ctypes;
-//pub mod draw;
+pub mod draw;
 pub mod lcd;
 pub mod pins;
 // todo maybe rename to board or something

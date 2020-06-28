@@ -84,7 +84,7 @@ fn hal_blink() {
     }
 }
 
-unsafe fn setup_serial(peripherals: Peripherals) {
+unsafe fn _setup_serial(peripherals: Peripherals) {
     //serial!("hi");
 
     let mut flash = peripherals.FLASH.constrain();
@@ -153,9 +153,4 @@ unsafe fn _setup_adc_dma(peripherals: &mut Peripherals) {
 
     // Start ADC
     // peripherals.ADC1.cr2.modify(|_, w| w.adon().enabled());
-}
-
-pub struct DummyDelay;
-impl embedded_hal::blocking::delay::DelayMs<u16> for DummyDelay {
-    fn delay_ms(&mut self, _ms: u16) {}
 }
