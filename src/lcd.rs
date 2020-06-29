@@ -1,9 +1,10 @@
 use crate::draw::draw_waves;
+use core::fmt::Write;
 
 use ili9341::{Ili9341, Orientation};
 use embedded_hal::digital::v2::OutputPin;
 use cortex_m_semihosting::hprintln;
-use stm32f1xx_hal::{adc, delay::Delay, dma::Half, pac, prelude::*};
+use stm32f1xx_hal::{adc, delay::Delay, pac, prelude::*, serial::{Serial, Config}};
 // use stm32f1::stm32f103::
 
 use cortex_m::singleton;
@@ -32,31 +33,6 @@ use embedded_graphics::{
     style::{PrimitiveStyle, Styled},
 };
 
-
-// Mappings taken from
-// https://github.com/ardyesp/DLO-138/blob/master/src/TFTLib/Adafruit_TFTLCD_8bit_STM32.h
-// fn tft_rdx() -> PB10 { PB10 } // Read
-// fn tft_wrx() -> PC15 { PC15 } // Write
-// fn tft_dcx() -> PC14 { PC14 } // Data/Command (sometimes Register Select (RS))
-// fn tft_csx() -> PC13 { PC13 } // Chip Select
-// fn tft_rst() -> PB11 { PB11 } // Reset
-
-// fn tft_data_pins() -> &'static mut [&'static mut dyn OutputPin<Error = !>; 8] {
-//     static mut PINS: [&'static mut dyn OutputPin<Error = !>; 8] = [
-// 	&mut PB0,
-// 	&mut PB1,
-// 	&mut PB2,
-// 	&mut PB3,
-// 	&mut PB4,
-// 	&mut PB5,
-// 	&mut PB6,
-// 	&mut PB7
-//     ];
-
-//     unsafe { &mut PINS }
-// }
-
-
 pub fn init() {
     let dp = pac::Peripherals::take().unwrap();
     let cp = cortex_m::Peripherals::take().unwrap();
@@ -78,14 +54,38 @@ pub fn init() {
 	.freeze(&mut flash.acr);
     let mut delay = Delay::new(cp.SYST, clocks);
 
+    const SAMPLE_DEPTH: usize = 512;
     let dma_ch1 = dp.DMA1.split(&mut rcc.ahb).1;
     let adc1 = adc::Adc::adc1(dp.ADC1, &mut rcc.apb2, clocks);
     let adc_ch0 = gpioa.pa0.into_analog(&mut gpioa.crl);
 
-    const SAMPLE_DEPTH: usize = 512;
+    let tx_uart = gpioa.pa9.into_alternate_push_pull(&mut gpioa.crh);
+    let rx_uart = gpioa.pa10;
 
-    let mut adc_dma = adc1.with_dma(adc_ch0, dma_ch1);
     let mut adc_samples = singleton!(: [u16; SAMPLE_DEPTH] = [0; SAMPLE_DEPTH]).unwrap();
+    let mut adc_dma = adc1.with_dma(adc_ch0, dma_ch1);
+
+    //serial!("possibly");
+
+    let serial = Serial::usart1(
+	dp.USART1,
+	(tx_uart, rx_uart),
+	&mut afio.mapr,
+	Config::default().baudrate(115200.bps()),
+	clocks,
+	&mut rcc.apb2
+    );
+
+    let (tx_uart, _rx_uart) = serial.split();
+
+    // serial!("this");
+    // serial!("should");
+    // serial!("be...");
+    // serial!("sloww..");
+    crate::debug::init(tx_uart);
+
+    // writeln!(tx_uart, "meep").unwrap();
+    serial!("meep..\nmeep\nmeeeeep");
 
     let (pa15, pb3, pb4) = afio.mapr.disable_jtag(gpioa.pa15, gpiob.pb3, gpiob.pb4);
 
@@ -150,34 +150,38 @@ pub fn init() {
 
     // let w = lcd.width() as i32;
 
-    let mut seed = 42;
-    let mut delta: i32 = 1;
+    // let mut seed = 42;
+    // let mut delta: i32 = 1;
 
-    let mut r = wyrng(&mut seed) as u8;
-    let mut g = wyrng(&mut seed) as u8;
-    let mut b = wyrng(&mut seed) as u8;
+    // let mut r = wyrng(&mut seed) as u8;
+    // let mut g = wyrng(&mut seed) as u8;
+    // let mut b = wyrng(&mut seed) as u8;
 
+    let mut color = Rgb565::new(0, 0, 0);
     loop {
 	// let mut x = wyrng(&mut seed) as i32;
 	// x = x % (w / 2) + w / 2;
 
+	// slow (is it?),try not not do this here
+	// todo troubleshoot whether adc inputs are registering
 	let (filled_adc_samples, finished_adc_dma) = adc_dma.read(adc_samples).wait();
 	adc_dma = finished_adc_dma;
 	adc_samples = filled_adc_samples;
 
-    	if wyrng(&mut seed) & 0b1111 == 0 {
-    	    delta = -delta;
+    	// if wyrng(&mut seed) & 0b1111 == 0 {
+    	//     delta = -delta;
 
-    	    r = (r as i32 + delta) as u8;
-    	    g = (g as i32 - delta) as u8;
-    	    b = (b as i32 + delta) as u8;
-    	}
-    	let color = Rgb565::new(r, g, b);
-
-	hprintln!("{:?}", &adc_samples[0]).unwrap();
-	draw_waves(&adc_samples[..], &mut lcd, color);
+    	//     r = (r as i32 + delta) as u8;
+    	//     g = (g as i32 - delta) as u8;
+    	//     b = (b as i32 + delta) as u8;
+    	// }
 
 
+	// todo could disable print in release mode
+	// serial!("{:?}", &adc_samples[0..20]);
+	color = draw_waves(&adc_samples[..], &mut lcd, color, &mut delay);
+
+	// delay.delay_ms(100 as u16);
 
 	// 	for y in 0 .. lcd.height() {
 
@@ -196,7 +200,6 @@ pub fn init() {
     // 	    	.draw(&mut lcd).unwrap();
 
 
-    // 	    // delay.delay_ms(5 as u16);
     // 	}
     }
 }

@@ -11,5 +11,5 @@ pub mod stm32_peripherals;
 pub mod sample;
 
 // todo arduino feature flag
-//pub mod adafruit_lcd;
-//pub mod bindings;
+// pub mod adafruit_lcd;
+// pub mod bindings;

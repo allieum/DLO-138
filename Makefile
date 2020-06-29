@@ -67,7 +67,7 @@ nobindings: build-arduino deploy-arduino listen-serial
 #
 # - could potentially run cbindgen from build script
 #   to get rid of command line dependency and enforce order / correctness ???
-#all: clean cbindgen build-arduino deploy-arduino listen-serial
+arduino: clean cbindgen build-arduino deploy-arduino listen-serial
 
 rust: build-rust print-size deploy-rust listen-serial
 
@@ -104,10 +104,14 @@ deploy-tiny:
 deploy-rust:
 	OUTPUT_BIN=${RUST_BIN} make _deploy
 
+deploy-oem:
+	OUTPUT_BIN=oem.hex make _deploy
+
 # retry because this 'randomly' fails sometimes (timing issue?)
 _deploy:
 	stm32flash ${FLASH_FLAGS} || stm32flash ${FLASH_FLAGS}
 
+# todo why does this only work after arduino-ide reads the device first?
 listen-serial:
 	socat stdio ${SERIAL_DEVICE}
 

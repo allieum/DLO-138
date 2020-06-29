@@ -45,9 +45,9 @@ void setup()	{
 // ------------------------
 void loop()	{
 // ------------------------
-//	controlLoop();
-	Serial.print("blonk ");
-	blinkLED();
-	delay(500);
-	Serial.print(PA15); // what are LOW/HIGH?
+	controlLoop();
+	/* Serial.print("blonk "); */
+	/* blinkLED(); */
+	/* delay(500); */
+	/* Serial.print(PA15); // what are LOW/HIGH? */
 }
